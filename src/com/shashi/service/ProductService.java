@@ -23,10 +23,15 @@ public interface ProductService {
 	public List<ProductBean> getAllProductsByType(String type);
 
 	/**
-	 * Get used products
+	 * Get all used products
+	 * @return Products that are used
 	 */
 	public List<ProductBean> getAllUsedProducts();
 
+	/**
+	 * Get all used products by type
+	 * @return Products that are used filtered by type
+	 */
 	public List<ProductBean> getAllUsedProductsByType(String type);
 
 
@@ -38,6 +43,10 @@ public interface ProductService {
 
 	public List<ProductBean> searchAllProducts(String search);
 
+	/**
+	 * Get all used products filtered by a search string
+	 * @return Products that are used filtered by search string
+	 */
 	public List<ProductBean> searchAllUsedProducts(String search);
 
 	public byte[] getImage(String prodId);
