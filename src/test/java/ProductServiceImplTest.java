@@ -49,10 +49,10 @@ class ProductServiceImplTest {
         productService = new ProductServiceImpl();
 
         products = Arrays.asList(
-                new ProductBean(IDUtil.generateId() + "1", "Test Prod 1", "mobile", "testInfo 1", 100, 1, null),
-                new ProductBean(IDUtil.generateId() + "2", "Test Prod 2", "camera", "testInfo 2", 200, 2, null),
-                new ProductBean(IDUtil.generateId() + "3", "Test Prod 3", "tv", "testInfo 3", 300, 3, null),
-                new ProductBean(IDUtil.generateId() + "4", "Test Prod 4", "tv", "testInfo 4", 400, 5, null)
+                new ProductBean(IDUtil.generateId() + "1", "Test Prod 1", "mobile", "testInfo 1", 100, 1, null, false),
+                new ProductBean(IDUtil.generateId() + "2", "Test Prod 2", "camera", "testInfo 2", 200, 2, null, false),
+                new ProductBean(IDUtil.generateId() + "3", "Test Prod 3", "tv", "testInfo 3", 300, 3, null, false),
+                new ProductBean(IDUtil.generateId() + "4", "Test Prod 4", "tv", "testInfo 4", 400, 5, null, false)
         );
         for (ProductBean product : products) {
             productService.addProduct(product);

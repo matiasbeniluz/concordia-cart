@@ -8,9 +8,9 @@ import com.shashi.beans.ProductBean;
 public interface ProductService {
 
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-			InputStream prodImage);
+			InputStream prodImage, boolean isUsed);
 
-	public String addProduct(ProductBean product);
+    public String addProduct(ProductBean product);
 
 	public String removeProduct(String prodId);
 
@@ -22,6 +22,13 @@ public interface ProductService {
 
 	public List<ProductBean> getAllProductsByType(String type);
 
+	/**
+	 * Get used products
+	 */
+	public List<ProductBean> getAllUsedProducts();
+
+	public List<ProductBean> getAllUsedProductsByType(String type);
+
 
 	/**
 	 * Get products that are low in stock
@@ -30,6 +37,8 @@ public interface ProductService {
 	public List<ProductBean> getLowStockProduct();
 
 	public List<ProductBean> searchAllProducts(String search);
+
+	public List<ProductBean> searchAllUsedProducts(String search);
 
 	public byte[] getImage(String prodId);
 

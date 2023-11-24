@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="com.shashi.service.impl.*, com.shashi.service.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
-<html>
+<html xmlns:c="http://java.sun.com/jsp/jstl/core">
 <head>
 <title>Logout Header</title>
 <meta charset="utf-8">
@@ -24,15 +25,32 @@
 		style="margin-top: 45px; background-color: #33cc33; color: white; padding: 5px;">
 		<h2>Ellison Electronics</h2>
 		<h6>We specialize in Electronics</h6>
-		<form class="form-inline" action="index.jsp" method="get">
-			<div class="input-group">
-				<input type="text" class="form-control" size="50" name="search"
-					placeholder="Search Items" required>
-				<div class="input-group-btn">
-					<input type="submit" class="btn btn-danger" value="Search" />
-				</div>
-			</div>
-		</form>
+
+		<c:choose>
+			<c:when test="${param.isUsedProductsPage == 1}">
+				<form class="form-inline" action="usedProducts.jsp" method="get">
+					<div class="input-group">
+						<input type="text" class="form-control" size="50" name="search"
+							   placeholder="Search Used Items" required>
+						<div class="input-group-btn">
+							<input type="submit" class="btn btn-danger" value="Search" />
+						</div>
+					</div>
+				</form>
+			</c:when>
+			<c:otherwise>
+				<form class="form-inline" action="index.jsp" method="get">
+					<div class="input-group">
+						<input type="text" class="form-control" size="50" name="search"
+							   placeholder="Search Items" required>
+						<div class="input-group-btn">
+							<input type="submit" class="btn btn-danger" value="Search" />
+						</div>
+					</div>
+				</form>
+			</c:otherwise>
+		</c:choose>
+
 		<p align="center"
 			style="color: blue; font-weight: bold; margin-top: 5px; margin-bottom: 5px;"
 			id="message"></p>
@@ -62,6 +80,7 @@
 					<li><a href="login.jsp">Login</a></li>
 					<li><a href="register.jsp">Register</a></li>
 					<li><a href="index.jsp">Products</a></li>
+					<li><a href="usedProducts.jsp">Used Products</a></li>
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Category <span class="caret"></span>
 					</a>
