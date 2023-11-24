@@ -52,7 +52,11 @@ class ProductServiceImplTest {
                 new ProductBean(IDUtil.generateId() + "1", "Test Prod 1", "mobile", "testInfo 1", 100, 1, null, false),
                 new ProductBean(IDUtil.generateId() + "2", "Test Prod 2", "camera", "testInfo 2", 200, 2, null, false),
                 new ProductBean(IDUtil.generateId() + "3", "Test Prod 3", "tv", "testInfo 3", 300, 3, null, false),
-                new ProductBean(IDUtil.generateId() + "4", "Test Prod 4", "tv", "testInfo 4", 400, 5, null, false)
+                new ProductBean(IDUtil.generateId() + "4", "Test Prod 4", "tv", "testInfo 4", 400, 5, null, false),
+                new ProductBean(IDUtil.generateId() + "5", "Test Prod 5", "mobile", "testInfo 5", 100, 5, null, true),
+                new ProductBean(IDUtil.generateId() + "6", "Test Prod 6", "camera", "testInfo 6", 200, 6, null, true),
+                new ProductBean(IDUtil.generateId() + "7", "Test Prod 7", "tv", "testInfo 7", 300, 7, null, true),
+                new ProductBean(IDUtil.generateId() + "8", "Test Prod 8", "tv", "testInfo 8", 400, 8, null, true)
         );
         for (ProductBean product : products) {
             productService.addProduct(product);
@@ -98,6 +102,14 @@ class ProductServiceImplTest {
 
         assertFalse(result.isEmpty());
         assertTrue(result.contains(expectedProduct));
+    }
+
+    @Test
+    void getAllUsedProducts_ShouldReturnAllUsedProductsUsingIsUsedField() {
+        List<ProductBean> result;
+        result = productService.getAllUsedProducts();
+
+        assertTrue(result.stream().allMatch(ProductBean::getIsUsed));
     }
 
     /**
