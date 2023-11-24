@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps = null;
 
 		try {
-			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?);");
+			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?,?);");
 			ps.setString(1, product.getProdId());
 			ps.setString(2, product.getProdName());
 			ps.setString(3, product.getProdType());
@@ -55,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
 			ps.setDouble(5, product.getProdPrice());
 			ps.setInt(6, product.getProdQuantity());
 			ps.setBlob(7, product.getProdImage());
+			ps.setBoolean(8, product.getIsUsed());
 
 			int k = ps.executeUpdate();
 
