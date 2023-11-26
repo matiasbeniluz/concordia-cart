@@ -48,7 +48,7 @@
 		message = "No items found for the search '" + (search != null ? search : type) + "'";
 		products = prodDao.getAllProducts();
 	} else if (popularity != null && !popularity.isEmpty()) {
-		products = prodDao.orderProductsByPopularity(products, popularity);
+		products = prodDao.sortProductsBySales(products, popularity);
 		if (popularity.equalsIgnoreCase("ASC")) {
 			message += " from Least to Most Popular";
 		} else {
