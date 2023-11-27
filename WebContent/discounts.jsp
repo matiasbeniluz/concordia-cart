@@ -22,13 +22,12 @@
 	/* Checking the user credentials */
 	String userName = (String) session.getAttribute("username");
 	String password = (String) session.getAttribute("password");
-	String userType = (String) session.getAttribute("usertype");
 
 	boolean isValidUser = true;
 
-	if (userType == null || userName == null || password == null || !userType.equals("customer")) {
+	if (userName == null || password == null) {
 
-		isValidUser = false;
+		//isValidUser = false;
 	}
 
 	ProductServiceImpl prodDao = new ProductServiceImpl();

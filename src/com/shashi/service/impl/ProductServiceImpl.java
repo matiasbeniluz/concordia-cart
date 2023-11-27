@@ -214,7 +214,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdPrice(rs.getDouble(5));
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
+				//product.setIsUsed(rs.getBoolean(8));
 
 				products.add(product);
 
