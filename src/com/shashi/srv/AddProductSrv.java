@@ -55,9 +55,11 @@ public class AddProductSrv extends HttpServlet {
 
 		InputStream prodImage = inputStream;
 
+		boolean isUsed = Boolean.parseBoolean(request.getParameter("used"));
+
 		ProductServiceImpl product = new ProductServiceImpl();
 
-		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage);
+		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed);
 
 		RequestDispatcher rd = request.getRequestDispatcher("addProduct.jsp?message=" + status);
 		rd.forward(request, response);
