@@ -61,5 +61,14 @@ public interface ProductService {
 
 	public int getProductQuantity(String prodId);
 
-	List<ProductBean> orderProductsByPopularity(List<ProductBean> products, String popularity);
+	/**
+	 * Sorts a list of products by their sales/order.
+	 *
+	 * @param products    The list of products to be sorted.
+	 * @param order  The criteria by which to sort the products.
+	 *                    Accepted values are "ASC" and "DESC".
+	 * @return A sorted list of products based on the specified order criteria.
+	 *         If the order value is not valid, an exception will be returned.
+	 */
+	List<ProductBean> sortProductsBySales(List<ProductBean> products, String order);
 }
