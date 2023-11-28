@@ -725,8 +725,22 @@ public class ProductServiceImpl implements ProductService {
 		return quantity;
 	}
 
+	/**
+	 * Sorts a list of products by their sales, based on the given popularity criteria.
+	 *
+	 * @param products   the list of products to be sorted
+	 * @param order the ordering criteria for sorting ("ASC" or "DESC")
+	 * @return the sorted list of products
+	 */
 	@Override
-	public List<ProductBean> orderProductsByPopularity(List<ProductBean> products, String popularity) {
+	public List<ProductBean> sortProductsBySales(List<ProductBean> products, String order) {
+		if (!"ASC".equalsIgnoreCase(order) && !"DESC".equalsIgnoreCase(order)) {
+			throw new IllegalArgumentException("Invalid popularity criteria: " + order);
+		}
+		if (products.isEmpty()) {
+			return products;
+		}
+
 		Map<String, ProductBean> prodIdToProduct = new HashMap<>();
 		List<ProductBean> orderedProducts = new ArrayList<>();
 
@@ -738,7 +752,7 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps;
 		ResultSet rs;
 		String query = "SELECT prodid, SUM(quantity) as total_quantity FROM orders WHERE prodid IN (" +
-				question_marks + ") GROUP by prodid ORDER BY total_quantity " + popularity;
+				question_marks + ") GROUP by prodid ORDER BY total_quantity " + order;
 
 		try {
 			ps = con.prepareStatement(query);
@@ -754,7 +768,7 @@ public class ProductServiceImpl implements ProductService {
 				orderedProducts.add(prodIdToProduct.remove(prodId));
 			}
 
-			if ("ASC".equalsIgnoreCase(popularity)) {
+			if ("ASC".equalsIgnoreCase(order)) {
 				orderedProducts.addAll(0, prodIdToProduct.values());
 			} else {
 				orderedProducts.addAll(prodIdToProduct.values());
