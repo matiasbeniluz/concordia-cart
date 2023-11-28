@@ -18,12 +18,10 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ProductServiceImplTest {
     static Connection con;
@@ -32,7 +30,11 @@ class ProductServiceImplTest {
 
     private ProductService productService;
 
+    private OrderService orderService;
+
     private List<ProductBean> products;
+
+    private List<OrderBean> orders;
 
 
     @BeforeEach
@@ -47,15 +49,36 @@ class ProductServiceImplTest {
         }
 
         productService = new ProductServiceImpl();
+        orderService = new OrderServiceImpl();
 
         products = Arrays.asList(
-                new ProductBean(IDUtil.generateId() + "1", "Test Prod 1", "mobile", "testInfo 1", 100, 1, null),
-                new ProductBean(IDUtil.generateId() + "2", "Test Prod 2", "camera", "testInfo 2", 200, 2, null),
-                new ProductBean(IDUtil.generateId() + "3", "Test Prod 3", "tv", "testInfo 3", 300, 3, null),
-                new ProductBean(IDUtil.generateId() + "4", "Test Prod 4", "tv", "testInfo 4", 400, 5, null)
+                new ProductBean(IDUtil.generateId() + "1", "Test Prod 1", "mobile", "testInfo 1", 100, 1, null, false),
+                new ProductBean(IDUtil.generateId() + "2", "Test Prod 2", "camera", "testInfo 2", 200, 2, null, false),
+                new ProductBean(IDUtil.generateId() + "3", "Test Prod 3", "tv", "testInfo 3", 300, 3, null, false),
+                new ProductBean(IDUtil.generateId() + "4", "Test Prod 4", "tv", "testInfo 4", 400, 5, null, false),
+                new ProductBean(IDUtil.generateId() + "5", "Test Prod 5", "mobile", "testInfo 5", 100, 5, null, true),
+                new ProductBean(IDUtil.generateId() + "6", "Test Prod 6", "camera", "testInfo 6", 200, 6, null, true),
+                new ProductBean(IDUtil.generateId() + "7", "Test Prod 7", "tv", "testInfo 7", 300, 7, null, true),
+                new ProductBean(IDUtil.generateId() + "8", "Test Prod 8", "tv", "testInfo 8", 400, 8, null, true)
+        );
+
+        orders = Arrays.asList(
+                new OrderBean("1", products.get(0).getProdId(), 1, 100.0),
+                new OrderBean("2", products.get(0).getProdId(), 4, 100.0),
+                new OrderBean("3", products.get(1).getProdId(), 2, 200.0),
+                new OrderBean("4", products.get(2).getProdId(), 3, 300.0),
+                new OrderBean("5", products.get(3).getProdId(), 4, 400.0),
+                new OrderBean("6", products.get(4).getProdId(), 5, 100.0),
+                new OrderBean("7", products.get(5).getProdId(), 6, 200.0),
+                new OrderBean("8", products.get(6).getProdId(), 7, 300.0),
+                new OrderBean("9", products.get(7).getProdId(), 8, 400.0)
         );
         for (ProductBean product : products) {
             productService.addProduct(product);
+        }
+
+        for (OrderBean order : orders) {
+            orderService.addOrder(order);
         }
     }
 
@@ -98,6 +121,54 @@ class ProductServiceImplTest {
 
         assertFalse(result.isEmpty());
         assertTrue(result.contains(expectedProduct));
+    }
+
+    @Test
+    void testSortProductsBySalesAsc() {
+        List<ProductBean> result = productService.sortProductsBySales(products, "ASC");
+        Map<String, Integer> orderedMap = new HashMap<>();
+
+        for (OrderBean order : orders) {
+            orderedMap.put(order.getProductId(), orderedMap.getOrDefault(order.getProductId(), 0) + order.getQuantity());
+        }
+
+        products.sort(Comparator.comparingInt(p -> orderedMap.getOrDefault(p.getProdId(), 0)));
+        assertNotNull(result);
+        assertEquals(result, products);
+    }
+
+    @Test
+    void testSortProductsBySalesDesc() {
+        List<ProductBean> result = productService.sortProductsBySales(products, "DESC");
+        Map<String, Integer> orderedMap = new HashMap<>();
+
+        for (OrderBean order : orders) {
+            orderedMap.put(order.getProductId(), orderedMap.getOrDefault(order.getProductId(), 0) + order.getQuantity());
+        }
+
+        products.sort((p1, p2) -> orderedMap.get(p2.getProdId()) - orderedMap.getOrDefault(p1.getProdId(), 0));
+        assertNotNull(result);
+        assertEquals(result, products);
+    }
+
+    @Test
+    void testSortProductsBySalesInvalidOrder() {
+        assertThrows(IllegalArgumentException.class, () -> productService.sortProductsBySales(products, "invalid"));
+    }
+
+    @Test
+    void testSortProductsBySalesEmptyProduct() {
+        products = Collections.emptyList();
+        List<ProductBean> result = productService.sortProductsBySales(products, "ASC");
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void getAllUsedProducts_ShouldReturnAllUsedProductsUsingIsUsedField() {
+        List<ProductBean> result;
+        result = productService.getAllUsedProducts();
+
+        assertTrue(result.stream().allMatch(ProductBean::getIsUsed));
     }
 
     /**

@@ -25,11 +25,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-			InputStream prodImage) {
+							 InputStream prodImage, boolean isUsed) {
 		String status = null;
 		String prodId = IDUtil.generateId();
 
-		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage);
+		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed);
 
 		status = addProduct(product);
 
@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps = null;
 
 		try {
-			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?);");
+			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?,?);");
 			ps.setString(1, product.getProdId());
 			ps.setString(2, product.getProdName());
 			ps.setString(3, product.getProdType());
@@ -56,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
 			ps.setDouble(5, product.getProdPrice());
 			ps.setInt(6, product.getProdQuantity());
 			ps.setBlob(7, product.getProdImage());
+			ps.setBoolean(8, product.getIsUsed());
 
 			int k = ps.executeUpdate();
 
@@ -214,6 +215,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdPrice(rs.getDouble(5));
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
+				product.setIsUsed(rs.getBoolean(8));
 
 				products.add(product);
 
@@ -255,6 +257,92 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdPrice(rs.getDouble(5));
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
+				product.setIsUsed(rs.getBoolean(8));
+
+				products.add(product);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		DBUtil.closeConnection(rs);
+
+		return products;
+	}
+
+
+	@Override
+	public List<ProductBean> getAllUsedProducts() {
+		List<ProductBean> products = new ArrayList<ProductBean>();
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("select * from product where isused is true");
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ProductBean product = new ProductBean();
+
+				product.setProdId(rs.getString(1));
+				product.setProdName(rs.getString(2));
+				product.setProdType(rs.getString(3));
+				product.setProdInfo(rs.getString(4));
+				product.setProdPrice(rs.getDouble(5));
+				product.setProdQuantity(rs.getInt(6));
+				product.setProdImage(rs.getAsciiStream(7));
+				product.setIsUsed(rs.getBoolean(8));
+
+				products.add(product);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		DBUtil.closeConnection(rs);
+
+		return products;
+	}
+
+	@Override
+	public List<ProductBean> getAllUsedProductsByType(String type) {
+		List<ProductBean> products = new ArrayList<ProductBean>();
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where isused is true and lower(ptype) like ?;");
+			ps.setString(1, "%" + type + "%");
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ProductBean product = new ProductBean();
+
+				product.setProdId(rs.getString(1));
+				product.setProdName(rs.getString(2));
+				product.setProdType(rs.getString(3));
+				product.setProdInfo(rs.getString(4));
+				product.setProdPrice(rs.getDouble(5));
+				product.setProdQuantity(rs.getInt(6));
+				product.setProdImage(rs.getAsciiStream(7));
+				product.setIsUsed(rs.getBoolean(8));
 
 				products.add(product);
 
@@ -305,6 +393,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdPrice(rs.getDouble(5));
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
+				product.setIsUsed(rs.getBoolean(8));
 
 				products.add(product);
 
@@ -416,6 +505,53 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdPrice(rs.getDouble(5));
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
+				product.setIsUsed(rs.getBoolean(8));
+
+				products.add(product);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		DBUtil.closeConnection(rs);
+
+		return products;
+	}
+
+	@Override
+	public List<ProductBean> searchAllUsedProducts(String search) {
+		List<ProductBean> products = new ArrayList<ProductBean>();
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement(
+					"SELECT * FROM `shopping-cart`.product where (lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?) and isused is true");
+			search = "%" + search + "%";
+			ps.setString(1, search);
+			ps.setString(2, search);
+			ps.setString(3, search);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ProductBean product = new ProductBean();
+
+				product.setProdId(rs.getString(1));
+				product.setProdName(rs.getString(2));
+				product.setProdType(rs.getString(3));
+				product.setProdInfo(rs.getString(4));
+				product.setProdPrice(rs.getDouble(5));
+				product.setProdQuantity(rs.getInt(6));
+				product.setProdImage(rs.getAsciiStream(7));
+				product.setIsUsed(rs.getBoolean(8));
 
 				products.add(product);
 
@@ -719,8 +855,22 @@ public class ProductServiceImpl implements ProductService {
 		return quantity;
 	}
 
+	/**
+	 * Sorts a list of products by their sales, based on the given popularity criteria.
+	 *
+	 * @param products   the list of products to be sorted
+	 * @param order the ordering criteria for sorting ("ASC" or "DESC")
+	 * @return the sorted list of products
+	 */
 	@Override
-	public List<ProductBean> orderProductsByPopularity(List<ProductBean> products, String popularity) {
+	public List<ProductBean> sortProductsBySales(List<ProductBean> products, String order) {
+		if (!"ASC".equalsIgnoreCase(order) && !"DESC".equalsIgnoreCase(order)) {
+			throw new IllegalArgumentException("Invalid popularity criteria: " + order);
+		}
+		if (products.isEmpty()) {
+			return products;
+		}
+
 		Map<String, ProductBean> prodIdToProduct = new HashMap<>();
 		List<ProductBean> orderedProducts = new ArrayList<>();
 
@@ -732,7 +882,7 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps;
 		ResultSet rs;
 		String query = "SELECT prodid, SUM(quantity) as total_quantity FROM orders WHERE prodid IN (" +
-				question_marks + ") GROUP by prodid ORDER BY total_quantity " + popularity;
+				question_marks + ") GROUP by prodid ORDER BY total_quantity " + order;
 
 		try {
 			ps = con.prepareStatement(query);
@@ -748,7 +898,7 @@ public class ProductServiceImpl implements ProductService {
 				orderedProducts.add(prodIdToProduct.remove(prodId));
 			}
 
-			if ("ASC".equalsIgnoreCase(popularity)) {
+			if ("ASC".equalsIgnoreCase(order)) {
 				orderedProducts.addAll(0, prodIdToProduct.values());
 			} else {
 				orderedProducts.addAll(prodIdToProduct.values());
