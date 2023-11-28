@@ -59,8 +59,7 @@ class ProductServiceImplTest {
                 new ProductBean(IDUtil.generateId() + "5", "Test Prod 5", "mobile", "testInfo 5", 100, 5, null, true),
                 new ProductBean(IDUtil.generateId() + "6", "Test Prod 6", "camera", "testInfo 6", 200, 6, null, true),
                 new ProductBean(IDUtil.generateId() + "7", "Test Prod 7", "tv", "testInfo 7", 300, 7, null, true),
-                new ProductBean(IDUtil.generateId() + "8", "Test Prod 8", "tv", "testInfo 8", 400, 8, null, true),
-                new ProductBean(IDUtil.generateId() + "5", "Test Prod 5", "tv", "testInfo 5", 500, 10, null)
+                new ProductBean(IDUtil.generateId() + "8", "Test Prod 8", "tv", "testInfo 8", 400, 8, null, true)
         );
 
         orders = Arrays.asList(
@@ -68,7 +67,11 @@ class ProductServiceImplTest {
                 new OrderBean("2", products.get(0).getProdId(), 4, 100.0),
                 new OrderBean("3", products.get(1).getProdId(), 2, 200.0),
                 new OrderBean("4", products.get(2).getProdId(), 3, 300.0),
-                new OrderBean("5", products.get(3).getProdId(), 4, 400.0)
+                new OrderBean("5", products.get(3).getProdId(), 4, 400.0),
+                new OrderBean("6", products.get(4).getProdId(), 5, 100.0),
+                new OrderBean("7", products.get(5).getProdId(), 6, 200.0),
+                new OrderBean("8", products.get(6).getProdId(), 7, 300.0),
+                new OrderBean("9", products.get(7).getProdId(), 8, 400.0)
         );
         for (ProductBean product : products) {
             productService.addProduct(product);
