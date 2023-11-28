@@ -454,7 +454,6 @@ public class ProductServiceImpl implements ProductService {
 							product.setDiscount(p.getDiscount());
 
 							products.add(product);
-							System.out.println("Product name: " + product.getProdName());
 						}
 					}
 				}
