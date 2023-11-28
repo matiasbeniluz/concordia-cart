@@ -2,6 +2,7 @@ package com.shashi.service.impl;
 
 import com.shashi.beans.DemandBean;
 import com.shashi.beans.ProductBean;
+import com.shashi.beans.Discount;
 import com.shashi.service.ProductService;
 import com.shashi.utility.DBUtil;
 import com.shashi.utility.IDUtil;
@@ -321,6 +322,72 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	public List<ProductBean> getUnpopularProduct() {
+		List<ProductBean> products = new ArrayList<>();
+		int defaultThreshold = 3;
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+        try {
+
+            // Get all products
+            List<ProductBean> allProducts = getAllProducts();
+
+            // Iterate through each product and check sold quantity
+            for (ProductBean p : allProducts) {
+                int soldQuantity = 0;
+
+				con = DBUtil.provideConnection();
+				ps = null;
+				rs = null;
+
+				try {
+
+					// Check if there's a discount for the current product ID
+					// Proceed only if there's no discount
+					if (!discountExists(p.getProdId())) {
+
+						ps = con.prepareStatement("SELECT SUM(quantity) FROM orders WHERE prodid = ?");
+						ps.setString(1, p.getProdId());
+						rs = ps.executeQuery();
+
+						if (rs.next()) {
+							soldQuantity = rs.getInt(1);
+						}
+
+						if (soldQuantity < defaultThreshold) {
+
+							// Product is unpopular, fetch its details and add to the list
+							ProductBean product = getProductDetails(p.getProdId());
+							product.setDiscount(p.getDiscount());
+
+							products.add(product);
+							System.out.println("Product name: " + product.getProdName());
+						}
+					}
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+				finally {
+					DBUtil.closeConnection(ps);
+					DBUtil.closeConnection(rs);
+				}
+			}
+		}
+		finally {
+			DBUtil.closeConnection(con);
+			DBUtil.closeConnection(ps);
+			DBUtil.closeConnection(rs);
+        }
+
+		return products;
+	}
+
+	@Override
 	public List<ProductBean> searchAllProducts(String search) {
 		List<ProductBean> products = new ArrayList<ProductBean>();
 
@@ -459,6 +526,34 @@ public class ProductServiceImpl implements ProductService {
 			ps.setInt(5, updatedProduct.getProdQuantity());
 			ps.setString(6, prevProductId);
 
+
+			// Check if the product has a discount
+			Discount discount = updatedProduct.getDiscount();
+			if (discount != null) {
+
+				// Update or insert the discount in the database
+				// Check if the discount already exists for the product
+				if (discountExists(discount.getProductId())) {
+
+					// Update the existing discount
+					String updateQuery = "UPDATE discount SET discountedPrice=?, startDate=?, endDate=? WHERE productId=?";
+					ps = con.prepareStatement(updateQuery);
+					ps.setDouble(1, discount.getDiscountedPrice());
+					ps.setDate(2, java.sql.Date.valueOf(discount.getStartDate()));
+					ps.setDate(3, java.sql.Date.valueOf(discount.getEndDate()));
+					ps.setString(4, discount.getProductId());
+				}
+				else {
+					// Insert a new discount
+					String insertQuery = "INSERT INTO discount (productId, discountedPrice, startDate, endDate) VALUES (?, ?, ?, ?)";
+					ps = con.prepareStatement(insertQuery);
+					ps.setString(1, discount.getProductId());
+					ps.setDouble(2, discount.getDiscountedPrice());
+					ps.setDate(3, java.sql.Date.valueOf(discount.getStartDate()));
+					ps.setDate(4, java.sql.Date.valueOf(discount.getEndDate()));
+				}
+			}
+
 			int k = ps.executeUpdate();
 			// System.out.println("prevQuantity: "+prevQuantity);
 			if ((k > 0) && (prevQuantity < updatedProduct.getProdQuantity())) {
@@ -496,6 +591,41 @@ public class ProductServiceImpl implements ProductService {
 
 		return status;
 	}
+
+
+	// Method to check if a discount already exists for a product
+	private boolean discountExists(String productId) {
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			// Query to check if a discount exists for the given productId
+			String query = "SELECT COUNT(*) FROM discount WHERE productId=?";
+			ps = con.prepareStatement(query);
+			ps.setString(1, productId);
+			rs = ps.executeQuery();
+
+			// Check if any rows were returned (discount exists)
+			if (rs.next()) {
+				int count = rs.getInt(1);
+				return count > 0;
+			}
+
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			DBUtil.closeConnection(con);
+			DBUtil.closeConnection(ps);
+		}
+
+		return false; // Return false in case of an error or no discount found
+	}
+
 
 	@Override
 	public double getProductPrice(String prodId) {

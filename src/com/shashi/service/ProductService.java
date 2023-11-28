@@ -29,6 +29,12 @@ public interface ProductService {
 	 */
 	public List<ProductBean> getLowStockProduct();
 
+	/**
+	 * Get products that are unpopular
+	 * @return Unpopular products
+	 */
+	public List<ProductBean> getUnpopularProduct();
+
 	public List<ProductBean> searchAllProducts(String search);
 
 	public byte[] getImage(String prodId);

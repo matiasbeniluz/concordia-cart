@@ -16,6 +16,7 @@ public class ProductBean implements Serializable {
 	private double prodPrice;
 	private int prodQuantity;
 	private InputStream prodImage;
+	private Discount discount;
 
 	public ProductBean(String prodId, String prodName, String prodType, String prodInfo, double prodPrice,
 			int prodQuantity, InputStream prodImage) {
@@ -27,6 +28,19 @@ public class ProductBean implements Serializable {
 		this.prodPrice = prodPrice;
 		this.prodQuantity = prodQuantity;
 		this.prodImage = prodImage;
+	}
+
+	// Constructor with Discount
+	public ProductBean(String prodId, String prodName, String prodType, String prodInfo,
+					   double prodPrice, int prodQuantity, InputStream prodImage, Discount discount) {
+		this.prodId = prodId;
+		this.prodName = prodName;
+		this.prodType = prodType;
+		this.prodInfo = prodInfo;
+		this.prodPrice = prodPrice;
+		this.prodQuantity = prodQuantity;
+		this.prodImage = prodImage;
+		this.discount = discount;
 	}
 
 	public String getProdId() {
@@ -85,6 +99,14 @@ public class ProductBean implements Serializable {
 		this.prodImage = prodImage;
 	}
 
+	public Discount getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Discount discount) {
+		this.discount = discount;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ProductBean)) {
@@ -92,5 +114,29 @@ public class ProductBean implements Serializable {
 		}
 
 		return this.prodId.equals(((ProductBean) obj).prodId);
+	}
+
+
+	// Calculate the discounted price based on the sale percentage
+	// Update the discountedPrice of the Discount obj. based on the calculated result
+	public void calculateDiscountedPrice() {
+		if (discount != null) {
+
+			// If discount percentage is not zero, update the discounted price
+			// Else, set the discount to null
+			if (discount.getSalePercentage() != 0) {
+
+				// Calculate discounted price based on the sale percentage
+				discount.setDiscountedPrice((int)(prodPrice - (prodPrice * (- discount.getSalePercentage()) / 100.0)));
+
+				// Debug:
+				System.out.println("Discounted Price: " + discount.getDiscountedPrice());
+				System.out.println("Discounted Start Date: " + discount.getStartDate());
+				System.out.println("Discounted End Date: " + discount.getEndDate());
+				System.out.println(discount.getRemainingTime());
+			}
+			else
+				this.setDiscount(null);
+		}
 	}
 }

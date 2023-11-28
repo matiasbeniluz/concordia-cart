@@ -1,6 +1,7 @@
 package com.shashi.srv;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.shashi.beans.ProductBean;
+import com.shashi.beans.Discount;
 import com.shashi.service.impl.ProductServiceImpl;
 
 /**
@@ -53,13 +55,29 @@ public class UpdateProductSrv extends HttpServlet {
 		Double prodPrice = Double.parseDouble(request.getParameter("price"));
 		Integer prodQuantity = Integer.parseInt(request.getParameter("quantity"));
 
+		int salePercentage = Integer.parseInt(request.getParameter("salePercentage"));
+		LocalDate saleStartDate = LocalDate.parse(request.getParameter("startDate"));
+		LocalDate saleEndDate = LocalDate.parse(request.getParameter("endDate"));
+
+		// Create a Discount object and set the sale percentage
+		Discount discount = new Discount();
+		discount.setProductId(prodId);
+		discount.setSalePercentage(salePercentage);
+		discount.setStartDate(saleStartDate);
+		discount.setEndDate(saleEndDate);
+
 		ProductBean product = new ProductBean();
+
+		product.setDiscount(discount);
+
 		product.setProdId(prodId);
 		product.setProdName(prodName);
 		product.setProdInfo(prodInfo);
 		product.setProdPrice(prodPrice);
 		product.setProdQuantity(prodQuantity);
 		product.setProdType(prodType);
+
+		product.calculateDiscountedPrice();
 
 		ProductServiceImpl dao = new ProductServiceImpl();
 

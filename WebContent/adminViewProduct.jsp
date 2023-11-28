@@ -174,6 +174,54 @@
 		%>
 	</script>
 
+	<!-- Notification Modal for Unpopular Products -->
+	<div class="modal fade" id="unpopularProductModal" tabindex="-1" role="dialog" aria-labelledby="unpopularProductModal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+							aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="text-center" style="font-size: 20px;">
+							<strong>Attention Needed</strong>
+						</div>
+					</div>
+					<div class="row">
+						<div class="text-center" style="font-size: 24px; color: #DC1717">
+							<strong>SALE SUGGESTION PRODUCTS</strong>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="text-center">
+						<a href="adminStock.jsp">
+							<button type="button" class="btn btn-primary">
+								View Unpopular Products
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		<%
+        if (userType != null && userType.equals("admin")) {
+			List<ProductBean> lowStockProduct = prodDao.getLowStockProduct();
+            List<ProductBean> unpopularProducts = prodDao.getUnpopularProduct();
+
+            if (!unpopularProducts.isEmpty() && lowStockProduct.isEmpty()) {
+        %>
+		$('#unpopularProductModal').modal('show');
+		<%
+            }
+        }
+        %>
+	</script>
+
 	<%@ include file="footer.html"%>
 
 </body>

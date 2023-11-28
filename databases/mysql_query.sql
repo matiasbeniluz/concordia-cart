@@ -34,6 +34,23 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
+-- Table `shopping-cart`.`discount`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `shopping-cart`.`discount` ;
+
+CREATE TABLE IF NOT EXISTS `shopping-cart`.`discount` (
+    `discountId` INT PRIMARY KEY AUTO_INCREMENT,
+    `productId` VARCHAR(45) NOT NULL,
+    `discountedPrice` DOUBLE NOT NULL,
+    `startDate` DATE,
+    `endDate` DATE,
+    FOREIGN KEY (`productId`) REFERENCES `shopping-cart`.`product` (`pid`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `shopping-cart`.`orders`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `shopping-cart`.`orders` ;
@@ -156,6 +173,8 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
 
 -- -----------------------------------------------------
 -- Data for table `shopping-cart`.`product`
