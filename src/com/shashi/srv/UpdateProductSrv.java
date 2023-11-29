@@ -2,6 +2,7 @@ package com.shashi.srv;
 
 import java.io.IOException;
 
+import java.time.LocalDate;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.shashi.beans.ProductBean;
+import com.shashi.beans.DiscountBean;
+import com.shashi.service.impl.DiscountServiceImpl;
 import com.shashi.service.impl.ProductServiceImpl;
 
 /**
@@ -53,6 +56,10 @@ public class UpdateProductSrv extends HttpServlet {
 		Double prodPrice = Double.parseDouble(request.getParameter("price"));
 		Integer prodQuantity = Integer.parseInt(request.getParameter("quantity"));
 
+		int salePercentage = Integer.parseInt(request.getParameter("salePercentage"));
+		LocalDate saleStartDate = LocalDate.parse(request.getParameter("startDate"));
+		LocalDate saleEndDate = LocalDate.parse(request.getParameter("endDate"));
+
 		ProductBean product = new ProductBean();
 		product.setProdId(prodId);
 		product.setProdName(prodName);
@@ -61,14 +68,58 @@ public class UpdateProductSrv extends HttpServlet {
 		product.setProdQuantity(prodQuantity);
 		product.setProdType(prodType);
 
-		ProductServiceImpl dao = new ProductServiceImpl();
+		DiscountServiceImpl dsi = new DiscountServiceImpl();
 
-		String status = dao.updateProductWithoutImage(prodId, product);
+		// Retrieve the product's previous details to get the discount ID
+		ProductServiceImpl dao = new ProductServiceImpl();
+		ProductBean prevProduct = dao.getProductDetails(prodId);
+		String prevProdDiscountId = prevProduct.getDiscountId();
+
+		// Create a DiscountBean object and update the relevant info
+		DiscountBean discount;
+
+		// If the product has no discount id, create one
+		// Otherwise, get the previous one and update its components
+		if (prevProdDiscountId == null)
+			discount = new DiscountBean();
+		else
+			discount = dsi.getDiscountDetails(prevProdDiscountId);
+
+		String status;
+
+		// If the selected discount percentage is zero, set the product's discount id to null and delete the instance corresponding to this discount id from the discount table
+		// Otherwise update all the relevant info of the discount and product
+		if (salePercentage == 0) {
+
+			// Set the product discount id to null
+			product.setDiscountId(null);
+
+			status = dao.updateProductWithoutImage(prodId, product);
+
+			// Delete the instance associated with the discount id from the discount table
+			dsi.deleteDiscountFromDB(discount.getDiscountId());
+		}
+		else {
+			discount.setDiscountPercentage(salePercentage);
+			discount.setStartDate(saleStartDate);
+			discount.setEndDate(saleEndDate);
+
+			// Set the product discount id
+			product.setDiscountId(discount.getDiscountId());
+
+			// Update the discount in the discount table
+			dsi.updateDiscountIntoDB(discount);
+
+			// Debug:
+			System.out.println("The discount will be active for: " + discount.getRemainingTime());
+			System.out.println("The discounted price is: " + discount.discountedPrice(product.getProdPrice()));
+
+			status = dao.updateProductWithoutImage(prodId, product);
+		}
 
 		RequestDispatcher rd = request
 				.getRequestDispatcher("updateProduct.jsp?prodid=" + prodId + "&message=" + status);
 		rd.forward(request, response);
-
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

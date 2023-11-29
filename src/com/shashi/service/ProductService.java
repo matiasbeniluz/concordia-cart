@@ -8,7 +8,7 @@ import com.shashi.beans.ProductBean;
 public interface ProductService {
 
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-			InputStream prodImage, boolean isUsed);
+			InputStream prodImage, boolean isUsed, String discountId);
 
     public String addProduct(ProductBean product);
 
@@ -40,6 +40,12 @@ public interface ProductService {
 	 * @return Products low in stock
 	 */
 	public List<ProductBean> getLowStockProduct();
+
+	/**
+	 * Get products that are unpopular
+	 * @return Unpopular products
+	 */
+	public List<ProductBean> getUnpopularProduct();
 
 	public List<ProductBean> searchAllProducts(String search);
 

@@ -28,7 +28,25 @@ CREATE TABLE IF NOT EXISTS `shopping-cart`.`product` (
   `pquantity` INT NULL DEFAULT NULL,
   `image` LONGBLOB NULL DEFAULT NULL,
   `isused` BOOLEAN DEFAULT FALSE,
-  PRIMARY KEY (`pid`))
+  `discountid` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`pid`),
+  FOREIGN KEY (`discountid`) REFERENCES `shopping-cart`.`discount` (`discountId`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `shopping-cart`.`discount`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `shopping-cart`.`discount` ;
+
+CREATE TABLE IF NOT EXISTS `shopping-cart`.`discount` (
+    `discountId` VARCHAR(45) NULL DEFAULT NULL,
+    `discountPercentage` INT NULL DEFAULT NULL,
+    `startDate` DATE,
+    `endDate` DATE,
+    UNIQUE (`discountId`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
