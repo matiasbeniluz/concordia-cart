@@ -313,6 +313,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
+				product.setUsedProdId(rs.getString(9));
+				product.setDiscountId(rs.getString(10));
 
 				products.add(product);
 
@@ -355,6 +357,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
+				product.setUsedProdId(rs.getString(9));
+				product.setDiscountId(rs.getString(10));
 
 				products.add(product);
 
@@ -406,6 +410,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
+				product.setUsedProdId(rs.getString(9));
+				product.setDiscountId(rs.getString(10));
 
 				products.add(product);
 
@@ -501,6 +507,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
+				product.setUsedProdId(rs.getString(9));
+				product.setDiscountId(rs.getString(10));
 				
 				products.add(product);
 
@@ -547,6 +555,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
+				product.setUsedProdId(rs.getString(9));
+				product.setDiscountId(rs.getString(10));
 				
 				products.add(product);
 
@@ -618,7 +628,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdPrice(rs.getDouble(5));
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
-				product.setDiscountId(rs.getString(9));
+				product.setUsedProdId(rs.getString(9));
+				product.setDiscountId(rs.getString(10));
 			}
 
 		} catch (SQLException e) {

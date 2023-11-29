@@ -17,7 +17,7 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body style="background-color: #E6F9E6;">
-	<%
+<%
 	/* Checking the user credentials */
 	String utype = (String) session.getAttribute("usertype");
 	String uname = (String) session.getAttribute("username");
@@ -150,6 +150,7 @@
 							Product</button>
 					</div>
 					<div>
+
 					<div class="col-md-4" style="margin-top: 2px">
 						<label for="usedQuantity"># used products</label>
 						<input type="number" id="usedQuantity" value = <%=new ProductServiceImpl().getUsedProductCount(product.getProdId())%>  name="usedQuantity" min="0" max="<%=(product.getIsUsed()) ? 0 : product.getProdQuantity()%>">
