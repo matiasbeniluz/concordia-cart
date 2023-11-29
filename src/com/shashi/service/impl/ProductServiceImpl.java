@@ -24,14 +24,20 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-							 InputStream prodImage, boolean isUsed, String usedProdId) {
+							 InputStream prodImage) {
 		String status = null;
+		
 		String prodId = IDUtil.generateId();
-
-		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed, usedProdId);
-
+		String usedProdId = prodId + "U";
+		
+		// Add original product
+		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, false, usedProdId);
 		status = addProduct(product);
-
+		
+		// Add used version of product
+		ProductBean usedProduct = new ProductBean(usedProdId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, true, null);
+		status = addProduct(usedProduct);
+			
 		return status;
 	}
 
@@ -47,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps = null;
 
 		try {
-			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?,?);");
+			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?,?,?);");
 			ps.setString(1, product.getProdId());
 			ps.setString(2, product.getProdName());
 			ps.setString(3, product.getProdType());
@@ -56,16 +62,21 @@ public class ProductServiceImpl implements ProductService {
 			ps.setInt(6, product.getProdQuantity());
 			ps.setBlob(7, product.getProdImage());
 			ps.setBoolean(8, product.getIsUsed());
+			ps.setString(9, product.getusedProdId());
 
 			int k = ps.executeUpdate();
 
-			if (k > 0) {
+			if(!product.getIsUsed())
+			{
+				if (k > 0) 
+				{
+					status = "Product Added Successfully with Product Id: " + product.getProdId();
 
-				status = "Product Added Successfully with Product Id: " + product.getProdId();
-
-			} else {
-
-				status = "Product Updation Failed!";
+				} 
+				else 
+				{
+					status = "Product Updation Failed!";
+				}	
 			}
 
 		} catch (SQLException e) {
@@ -113,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
 		DBUtil.closeConnection(con);
 		DBUtil.closeConnection(ps);
 		DBUtil.closeConnection(ps2);
-
+		
 		return status;
 	}
 

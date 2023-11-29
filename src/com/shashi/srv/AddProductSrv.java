@@ -2,6 +2,10 @@ package com.shashi.srv;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import com.shashi.service.impl.ProductServiceImpl;
+import com.shashi.utility.DBUtil;
+import com.shashi.utility.IDUtil;
 
 /**
  * Servlet implementation class AddProductSrv
@@ -55,19 +61,14 @@ public class AddProductSrv extends HttpServlet {
 
 		InputStream prodImage = inputStream;
 
-		boolean isUsed = Boolean.parseBoolean(request.getParameter("used"));
-
 		ProductServiceImpl product = new ProductServiceImpl();
 		
-		// Generate a used product ID and add an entry to the table that uses this new id, and we need to set the used product id for the non used product's used prod id
-		
-		
 
-		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed);
-
+		// Initial Product
+		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage);
 		RequestDispatcher rd = request.getRequestDispatcher("addProduct.jsp?message=" + status);
 		rd.forward(request, response);
-
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
