@@ -45,6 +45,7 @@
     String type = request.getParameter("type");
     String popularity = request.getParameter("popularity");
     String message = "Used Products";
+    
     if (search != null) {
         products = prodDao.searchAllUsedProducts(search);
         message = "Showing Results for '" + search + "'";

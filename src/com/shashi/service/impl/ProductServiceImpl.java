@@ -24,11 +24,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-							 InputStream prodImage, boolean isUsed) {
+							 InputStream prodImage, boolean isUsed, String usedProdId) {
 		String status = null;
 		String prodId = IDUtil.generateId();
 
-		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed);
+		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed, usedProdId);
 
 		status = addProduct(product);
 
@@ -199,7 +199,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("select * from product");
+			ps = con.prepareStatement("select * from product WHERE pisused = false");
 
 			rs = ps.executeQuery();
 
@@ -241,7 +241,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where lower(ptype) like ?;");
+			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where (lower(ptype) like ?) AND pisused = false;");
 			ps.setString(1, "%" + type + "%");
 			rs = ps.executeQuery();
 
@@ -284,7 +284,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("select * from product where isused is true");
+			ps = con.prepareStatement("select * from product where pisused is true AND pquantity > 0");
 
 			rs = ps.executeQuery();
 
@@ -326,7 +326,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where isused is true and lower(ptype) like ?;");
+			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where pisused is true AND lower(ptype) like ? AND pquantity > 0;");
 			ps.setString(1, "%" + type + "%");
 			rs = ps.executeQuery();
 
@@ -369,7 +369,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product p where pquantity <= ? OR pquantity <= (SELECT SUM(quantity) FROM `shopping-cart`.orders o WHERE orderid IN(SELECT transid FROM `shopping-cart`.transactions t WHERE t.time BETWEEN ? AND ?));");
+			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product p where (pquantity <= ? OR pquantity <= (SELECT SUM(quantity) FROM `shopping-cart`.orders o WHERE orderid IN(SELECT transid FROM `shopping-cart`.transactions t WHERE t.time BETWEEN ? AND ?))) AND pisused = false;");
 
 			LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
 
@@ -420,7 +420,7 @@ public class ProductServiceImpl implements ProductService {
 
 		try {
 			ps = con.prepareStatement(
-					"SELECT * FROM `shopping-cart`.product where lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?");
+					"SELECT * FROM `shopping-cart`.product where (lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?) AND pisused = false");
 			search = "%" + search + "%";
 			ps.setString(1, search);
 			ps.setString(2, search);
@@ -439,7 +439,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
-
+				
 				products.add(product);
 
 			}
@@ -466,7 +466,7 @@ public class ProductServiceImpl implements ProductService {
 
 		try {
 			ps = con.prepareStatement(
-					"SELECT * FROM `shopping-cart`.product where (lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?) and isused is true");
+					"SELECT * FROM `shopping-cart`.product where (lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?) AND pisused = true AND pquantity > 0");
 			search = "%" + search + "%";
 			ps.setString(1, search);
 			ps.setString(2, search);
@@ -485,7 +485,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
-
+				
 				products.add(product);
 
 			}
@@ -620,6 +620,41 @@ public class ProductServiceImpl implements ProductService {
 				status = "Product Updated Successfully!";
 			else
 				status = "Product Not available in the store!";
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		// System.out.println("Prod Update status : "+status);
+
+		return status;
+	}
+	
+	@Override
+	public String updateUsedProductWithoutImage(String usedProductID, int usedProductQuantity, ProductBean updatedProductInfo) {
+		
+
+		String status = "Product Updation Failed!";
+
+		
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+
+		try {
+			ps = con.prepareStatement("update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=? where pid=?");
+
+			ps.setString(1, updatedProductInfo.getProdName());
+			ps.setString(2, updatedProductInfo.getProdType());
+			ps.setString(3, updatedProductInfo.getProdInfo());
+			ps.setDouble(4, updatedProductInfo.getProdPrice() * 0.7);
+			ps.setInt(5, usedProductQuantity);
+			ps.setString(6, usedProductID);
+			
+			int k = ps.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -17,9 +17,10 @@ public class ProductBean implements Serializable {
 	private int prodQuantity;
 	private InputStream prodImage;
 	private boolean isUsed;
+	private String usedProdId;
 
 	public ProductBean(String prodId, String prodName, String prodType, String prodInfo, double prodPrice,
-			int prodQuantity, InputStream prodImage, boolean isUsed) {
+			int prodQuantity, InputStream prodImage, boolean isUsed, String usedProdId) {
 		super();
 		this.prodId = prodId;
 		this.prodName = prodName;
@@ -29,6 +30,7 @@ public class ProductBean implements Serializable {
 		this.prodQuantity = prodQuantity;
 		this.prodImage = prodImage;
 		this.isUsed = isUsed;
+		this.usedProdId = usedProdId;
 	}
 
 	public String getProdId() {
@@ -90,6 +92,14 @@ public class ProductBean implements Serializable {
 	public boolean getIsUsed() { return isUsed; }
 
 	public void setIsUsed(boolean isUsed) { this.isUsed = isUsed; }
+	
+	public String getusedProdId() {
+		return usedProdId;
+	}
+
+	public void setUsedProdId(String usedProdId) {
+		this.usedProdId = usedProdId;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

@@ -58,6 +58,10 @@ public class AddProductSrv extends HttpServlet {
 		boolean isUsed = Boolean.parseBoolean(request.getParameter("used"));
 
 		ProductServiceImpl product = new ProductServiceImpl();
+		
+		// Generate a used product ID and add an entry to the table that uses this new id, and we need to set the used product id for the non used product's used prod id
+		
+		
 
 		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed);
 

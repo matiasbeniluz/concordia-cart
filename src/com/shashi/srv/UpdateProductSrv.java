@@ -1,6 +1,10 @@
 package com.shashi.srv;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import com.shashi.beans.ProductBean;
 import com.shashi.service.impl.ProductServiceImpl;
+import com.shashi.utility.DBUtil;
 
 /**
  * Servlet implementation class UpdateProductSrv
@@ -52,6 +57,9 @@ public class UpdateProductSrv extends HttpServlet {
 		String prodInfo = request.getParameter("info");
 		Double prodPrice = Double.parseDouble(request.getParameter("price"));
 		Integer prodQuantity = Integer.parseInt(request.getParameter("quantity"));
+		Integer usedQuantity = Integer.parseInt(request.getParameter("usedQuantity"));
+		
+		
 
 		ProductBean product = new ProductBean();
 		product.setProdId(prodId);
@@ -60,9 +68,20 @@ public class UpdateProductSrv extends HttpServlet {
 		product.setProdPrice(prodPrice);
 		product.setProdQuantity(prodQuantity);
 		product.setProdType(prodType);
-
+		
+		String usedProdId = getusedProdId(product.getProdId());
 		ProductServiceImpl dao = new ProductServiceImpl();
 
+		// update used product info
+		if(usedProdId != null && usedQuantity > 0)
+		{
+			product.setProdQuantity(prodQuantity - usedQuantity);
+			product.setUsedProdId(usedProdId);
+			
+			dao.updateUsedProductWithoutImage(product.getusedProdId(), usedQuantity, product);
+		}
+		
+		// Update the product
 		String status = dao.updateProductWithoutImage(prodId, product);
 
 		RequestDispatcher rd = request
@@ -75,6 +94,36 @@ public class UpdateProductSrv extends HttpServlet {
 			throws ServletException, IOException {
 
 		doGet(request, response);
+	}
+	
+	private String getusedProdId(String prodId)
+	{
+			String usedprodId = null;
+
+			Connection con = DBUtil.provideConnection();
+
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+
+			try {
+				ps = con.prepareStatement("select pusedproductid from product where pid=?");
+
+				ps.setString(1, prodId);
+				rs = ps.executeQuery();
+
+				if (rs.next()) {
+					usedprodId = rs.getString("pusedproductid");
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			DBUtil.closeConnection(con);
+			DBUtil.closeConnection(ps);
+
+		return usedprodId;
 	}
 
 }
