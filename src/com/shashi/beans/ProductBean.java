@@ -110,12 +110,4 @@ public class ProductBean implements Serializable {
 
 		return this.prodId.equals(((ProductBean) obj).prodId);
 	}
-	
-	public int getUsedProductQuantity()
-	{
-		
-		
-		
-		return 0;
-	}
 }
