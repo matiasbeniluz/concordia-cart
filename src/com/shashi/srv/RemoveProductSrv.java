@@ -1,6 +1,10 @@
 package com.shashi.srv;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.shashi.service.impl.ProductServiceImpl;
+import com.shashi.utility.DBUtil;
 
 @WebServlet("/RemoveProductSrv")
 public class RemoveProductSrv extends HttpServlet {
@@ -45,8 +50,13 @@ public class RemoveProductSrv extends HttpServlet {
 		String prodId = request.getParameter("prodid");
 
 		ProductServiceImpl product = new ProductServiceImpl();
+		
+		// remove corresponding used product first since it relies on original product
+		product.removeProduct(getusedProdId(prodId));
 
 		String status = product.removeProduct(prodId);
+		
+		
 
 		RequestDispatcher rd = request.getRequestDispatcher("removeProduct.jsp?message=" + status);
 
@@ -58,6 +68,36 @@ public class RemoveProductSrv extends HttpServlet {
 			throws ServletException, IOException {
 
 		doGet(request, response);
+	}
+	
+	private String getusedProdId(String prodId)
+	{
+			String usedprodId = null;
+
+			Connection con = DBUtil.provideConnection();
+
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+
+			try {
+				ps = con.prepareStatement("select pusedproductid from product where pid=?");
+
+				ps.setString(1, prodId);
+				rs = ps.executeQuery();
+
+				if (rs.next()) {
+					usedprodId = rs.getString("pusedproductid");
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			DBUtil.closeConnection(con);
+			DBUtil.closeConnection(ps);
+
+		return usedprodId;
 	}
 
 }

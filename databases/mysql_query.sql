@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS `shopping-cart`.`product` (
   `pprice` DECIMAL(12,2) NULL DEFAULT NULL,
   `pquantity` INT NULL DEFAULT NULL,
   `image` LONGBLOB NULL DEFAULT NULL,
-  `isused` BOOLEAN DEFAULT FALSE,
+  `pisused` BOOLEAN DEFAULT FALSE,
+  `pusedproductid` VARCHAR(45) DEFAULT NULL,
   `discountid` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`pid`),
   FOREIGN KEY (`discountid`) REFERENCES `shopping-cart`.`discount` (`discountId`))
@@ -206,6 +207,18 @@ INSERT INTO `shopping-cart`.`product` (`pid`, `pname`, `ptype`, `pinfo`, `pprice
 
 COMMIT;
 
+ -- Generates used product id reference
+UPDATE `shopping-cart`.`product`
+SET `pusedproductid` = CONCAT(`pid`, 'U');
+
+-- Inserts the used products for the initial DB product entries
+INSERT INTO `shopping-cart`.`product`
+SELECT `pusedproductid`, `pname`, `ptype`, `pinfo`, `pprice` * 0.7, 0, `image`, true, null , 0
+FROM `shopping-cart`.`product`
+WHERE `pid` = REPLACE(`pusedproductid`, 'U', '');
+
+SELECT * FROM `shopping-cart`.`product`;
+
 
 -- -----------------------------------------------------
 -- Data for table `shopping-cart`.`orders`
@@ -256,4 +269,6 @@ USE `shopping-cart`;
 INSERT INTO `shopping-cart`.`usercart` (`username`, `prodid`, `quantity`) VALUES ('guest@gmail.com', 'P20230423082243', 2);
 
 COMMIT;
+
+
 

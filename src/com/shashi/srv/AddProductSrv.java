@@ -2,6 +2,10 @@ package com.shashi.srv;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import com.shashi.service.impl.ProductServiceImpl;
+import com.shashi.utility.DBUtil;
+import com.shashi.utility.IDUtil;
 
 /**
  * Servlet implementation class AddProductSrv
@@ -54,18 +60,16 @@ public class AddProductSrv extends HttpServlet {
 		InputStream inputStream = part.getInputStream();
 
 		InputStream prodImage = inputStream;
-
-		boolean isUsed = Boolean.parseBoolean(request.getParameter("used"));
-
+		
 		String discountId = request.getParameter("discountId");
 
 		ProductServiceImpl product = new ProductServiceImpl();
-
-		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed, discountId);
-
+		
+		// Initial Product
+		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, discountId);
 		RequestDispatcher rd = request.getRequestDispatcher("addProduct.jsp?message=" + status);
 		rd.forward(request, response);
-
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
