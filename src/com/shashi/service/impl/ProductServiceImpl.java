@@ -24,14 +24,21 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-							 InputStream prodImage, boolean isUsed, String discountId) {
+							 InputStream prodImage, String discountId) {
 		String status = null;
+		
 		String prodId = IDUtil.generateId();
-
-		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed, discountId);
+		String usedProdId = prodId + "U";
+		
+		// Add original product
+		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, false, usedProdId, discountId);
 
 		status = addProduct(product);
-
+		
+		// Add used version of product
+		ProductBean usedProduct = new ProductBean(usedProdId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, true, null, null);
+		status = addProduct(usedProduct);
+			
 		return status;
 	}
 
@@ -47,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps = null;
 
 		try {
-			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?,?);");
+			ps = con.prepareStatement("insert into product values(?,?,?,?,?,?,?,?,?);");
 			ps.setString(1, product.getProdId());
 			ps.setString(2, product.getProdName());
 			ps.setString(3, product.getProdType());
@@ -56,16 +63,21 @@ public class ProductServiceImpl implements ProductService {
 			ps.setInt(6, product.getProdQuantity());
 			ps.setBlob(7, product.getProdImage());
 			ps.setBoolean(8, product.getIsUsed());
+			ps.setString(9, product.getusedProdId());
 
 			int k = ps.executeUpdate();
 
-			if (k > 0) {
+			if(!product.getIsUsed())
+			{
+				if (k > 0) 
+				{
+					status = "Product Added Successfully with Product Id: " + product.getProdId();
 
-				status = "Product Added Successfully with Product Id: " + product.getProdId();
-
-			} else {
-
-				status = "Product Updation Failed!";
+				} 
+				else 
+				{
+					status = "Product Updation Failed!";
+				}	
 			}
 
 		} catch (SQLException e) {
@@ -113,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
 		DBUtil.closeConnection(con);
 		DBUtil.closeConnection(ps);
 		DBUtil.closeConnection(ps2);
-
+		
 		return status;
 	}
 
@@ -199,7 +211,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("select * from product");
+			ps = con.prepareStatement("select * from product WHERE pisused = false");
 
 			rs = ps.executeQuery();
 
@@ -241,7 +253,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where lower(ptype) like ?;");
+			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where (lower(ptype) like ?) AND pisused = false;");
 			ps.setString(1, "%" + type + "%");
 			rs = ps.executeQuery();
 
@@ -284,7 +296,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("select * from product where isused is true");
+			ps = con.prepareStatement("select * from product where pisused is true AND pquantity > 0");
 
 			rs = ps.executeQuery();
 
@@ -326,7 +338,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where isused is true and lower(ptype) like ?;");
+			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product where pisused is true AND lower(ptype) like ? AND pquantity > 0;");
 			ps.setString(1, "%" + type + "%");
 			rs = ps.executeQuery();
 
@@ -369,7 +381,7 @@ public class ProductServiceImpl implements ProductService {
 		ResultSet rs = null;
 
 		try {
-			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product p where pquantity <= ? OR pquantity <= (SELECT SUM(quantity) FROM `shopping-cart`.orders o WHERE orderid IN(SELECT transid FROM `shopping-cart`.transactions t WHERE t.time BETWEEN ? AND ?));");
+			ps = con.prepareStatement("SELECT * FROM `shopping-cart`.product p where (pquantity <= ? OR pquantity <= (SELECT SUM(quantity) FROM `shopping-cart`.orders o WHERE orderid IN(SELECT transid FROM `shopping-cart`.transactions t WHERE t.time BETWEEN ? AND ?))) AND pisused = false;");
 
 			LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
 
@@ -469,7 +481,7 @@ public class ProductServiceImpl implements ProductService {
 
 		try {
 			ps = con.prepareStatement(
-					"SELECT * FROM `shopping-cart`.product where lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?");
+					"SELECT * FROM `shopping-cart`.product where (lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?) AND pisused = false");
 			search = "%" + search + "%";
 			ps.setString(1, search);
 			ps.setString(2, search);
@@ -488,7 +500,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
-
+				
 				products.add(product);
 
 			}
@@ -515,7 +527,7 @@ public class ProductServiceImpl implements ProductService {
 
 		try {
 			ps = con.prepareStatement(
-					"SELECT * FROM `shopping-cart`.product where (lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?) and isused is true");
+					"SELECT * FROM `shopping-cart`.product where (lower(ptype) like ? or lower(pname) like ? or lower(pinfo) like ?) AND pisused = true AND pquantity > 0");
 			search = "%" + search + "%";
 			ps.setString(1, search);
 			ps.setString(2, search);
@@ -534,7 +546,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
 				product.setIsUsed(rs.getBoolean(8));
-
+				
 				products.add(product);
 
 			}
@@ -671,6 +683,41 @@ public class ProductServiceImpl implements ProductService {
 				status = "Product Updated Successfully!";
 			else
 				status = "Product Not available in the store!";
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		// System.out.println("Prod Update status : "+status);
+
+		return status;
+	}
+	
+	@Override
+	public String updateUsedProductWithoutImage(String usedProductID, int usedProductQuantity, ProductBean updatedProductInfo) {
+		
+
+		String status = "Product Updation Failed!";
+
+		
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+
+		try {
+			ps = con.prepareStatement("update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=? where pid=?");
+
+			ps.setString(1, updatedProductInfo.getProdName());
+			ps.setString(2, updatedProductInfo.getProdType());
+			ps.setString(3, updatedProductInfo.getProdInfo());
+			ps.setDouble(4, updatedProductInfo.getProdPrice() * 0.7);
+			ps.setInt(5, usedProductQuantity);
+			ps.setString(6, usedProductID);
+			
+			int k = ps.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -830,6 +877,39 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		return orderedProducts;
+	}
+	
+	public int getUsedProductCount(String prodId)
+	{
+		
+		int usedProductCount = 0;
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			// Quantity
+			ps = con.prepareStatement("select pquantity from product where pid = (select pusedproductid from product where pid=?)");
+
+			ps.setString(1, prodId);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				usedProductCount = rs.getInt("pquantity");
+			}
+			
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		
+		return usedProductCount;
 	}
 
 }

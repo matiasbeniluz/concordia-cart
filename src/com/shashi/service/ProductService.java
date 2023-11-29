@@ -8,7 +8,7 @@ import com.shashi.beans.ProductBean;
 public interface ProductService {
 
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-			InputStream prodImage, boolean isUsed, String discountId);
+			InputStream prodImage, String discountId);
 
     public String addProduct(ProductBean product);
 
@@ -60,6 +60,8 @@ public interface ProductService {
 	public ProductBean getProductDetails(String prodId);
 
 	public String updateProductWithoutImage(String prevProductId, ProductBean updatedProduct);
+	
+	public String updateUsedProductWithoutImage(String usedProductID, int usedProductQuantity, ProductBean updatedProductInfo);
 
 	public double getProductPrice(String prodId);
 
@@ -77,4 +79,6 @@ public interface ProductService {
 	 *         If the order value is not valid, an exception will be returned.
 	 */
 	List<ProductBean> sortProductsBySales(List<ProductBean> products, String order);
+	
+	public int getUsedProductCount(String prodId);
 }

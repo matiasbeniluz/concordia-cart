@@ -1,6 +1,10 @@
 package com.shashi.srv;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import java.time.LocalDate;
 import javax.servlet.RequestDispatcher;
@@ -15,6 +19,7 @@ import com.shashi.beans.ProductBean;
 import com.shashi.beans.DiscountBean;
 import com.shashi.service.impl.DiscountServiceImpl;
 import com.shashi.service.impl.ProductServiceImpl;
+import com.shashi.utility.DBUtil;
 
 /**
  * Servlet implementation class UpdateProductSrv
@@ -55,6 +60,9 @@ public class UpdateProductSrv extends HttpServlet {
 		String prodInfo = request.getParameter("info");
 		Double prodPrice = Double.parseDouble(request.getParameter("price"));
 		Integer prodQuantity = Integer.parseInt(request.getParameter("quantity"));
+		Integer usedQuantity = Integer.parseInt(request.getParameter("usedQuantity"));
+		
+		
 
 		int salePercentage = Integer.parseInt(request.getParameter("salePercentage"));
 		LocalDate saleStartDate = LocalDate.parse(request.getParameter("startDate"));
@@ -67,7 +75,8 @@ public class UpdateProductSrv extends HttpServlet {
 		product.setProdPrice(prodPrice);
 		product.setProdQuantity(prodQuantity);
 		product.setProdType(prodType);
-
+		
+		String usedProdId = getusedProdId(product.getProdId());
 		DiscountServiceImpl dsi = new DiscountServiceImpl();
 
 		// Retrieve the product's previous details to get the discount ID
@@ -85,36 +94,49 @@ public class UpdateProductSrv extends HttpServlet {
 		else
 			discount = dsi.getDiscountDetails(prevProdDiscountId);
 
-		String status;
-
+		// update used product info
+		if(usedProdId != null && usedQuantity > 0)
+		{
+			product.setProdQuantity(prodQuantity - usedQuantity);
+			product.setUsedProdId(usedProdId);
+			
+			dao.updateUsedProductWithoutImage(product.getusedProdId(), usedQuantity, product);
+		}
+		
+		// Update the product
+		String status = "";
+		
 		// If the selected discount percentage is zero, set the product's discount id to null and delete the instance corresponding to this discount id from the discount table
 		// Otherwise update all the relevant info of the discount and product
-		if (salePercentage == 0) {
+		if(discount != null)
+		{
+			if (salePercentage == 0) {
 
-			// Set the product discount id to null
-			product.setDiscountId(null);
+				// Set the product discount id to null
+				product.setDiscountId(null);
 
-			status = dao.updateProductWithoutImage(prodId, product);
+				status = dao.updateProductWithoutImage(prodId, product);
 
-			// Delete the instance associated with the discount id from the discount table
-			dsi.deleteDiscountFromDB(discount.getDiscountId());
-		}
-		else {
-			discount.setDiscountPercentage(salePercentage);
-			discount.setStartDate(saleStartDate);
-			discount.setEndDate(saleEndDate);
+				// Delete the instance associated with the discount id from the discount table
+				dsi.deleteDiscountFromDB(discount.getDiscountId());
+			}
+			else {
+				discount.setDiscountPercentage(salePercentage);
+				discount.setStartDate(saleStartDate);
+				discount.setEndDate(saleEndDate);
 
-			// Set the product discount id
-			product.setDiscountId(discount.getDiscountId());
+				// Set the product discount id
+				product.setDiscountId(discount.getDiscountId());
 
-			// Update the discount in the discount table
-			dsi.updateDiscountIntoDB(discount);
+				// Update the discount in the discount table
+				dsi.updateDiscountIntoDB(discount);
 
-			// Debug:
-			System.out.println("The discount will be active for: " + discount.getRemainingTime());
-			System.out.println("The discounted price is: " + discount.discountedPrice(product.getProdPrice()));
+				// Debug:
+				System.out.println("The discount will be active for: " + discount.getRemainingTime());
+				System.out.println("The discounted price is: " + discount.discountedPrice(product.getProdPrice()));
 
-			status = dao.updateProductWithoutImage(prodId, product);
+				status = dao.updateProductWithoutImage(prodId, product);
+			}
 		}
 
 		RequestDispatcher rd = request
@@ -126,6 +148,36 @@ public class UpdateProductSrv extends HttpServlet {
 			throws ServletException, IOException {
 
 		doGet(request, response);
+	}
+	
+	private String getusedProdId(String prodId)
+	{
+			String usedprodId = null;
+
+			Connection con = DBUtil.provideConnection();
+
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+
+			try {
+				ps = con.prepareStatement("select pusedproductid from product where pid=?");
+
+				ps.setString(1, prodId);
+				rs = ps.executeQuery();
+
+				if (rs.next()) {
+					usedprodId = rs.getString("pusedproductid");
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			DBUtil.closeConnection(con);
+			DBUtil.closeConnection(ps);
+
+		return usedprodId;
 	}
 
 }
