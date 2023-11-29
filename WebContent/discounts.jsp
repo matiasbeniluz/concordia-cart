@@ -22,16 +22,18 @@
 	/* Checking the user credentials */
 	String userName = (String) session.getAttribute("username");
 	String password = (String) session.getAttribute("password");
+	String userType = (String) session.getAttribute("usertype");
 
 	boolean isValidUser = true;
 
-	if (userName == null || password == null) {
+	if (userType == null || userName == null || password == null || !userType.equals("customer")) {
 
-		//isValidUser = false;
+		isValidUser = false;
 	}
 
 	ProductServiceImpl prodDao = new ProductServiceImpl();
 	List<ProductBean> products = new ArrayList<ProductBean>();
+	DiscountServiceImpl dsi = new DiscountServiceImpl();
 
 	String search = request.getParameter("search");
 	String type = request.getParameter("type");
@@ -50,7 +52,7 @@
 		message = "No items found for the search '" + (search != null ? search : type) + "'";
 		products = prodDao.getAllProducts();
 	} else if (popularity != null && !popularity.isEmpty()) {
-		products = prodDao.orderProductsByPopularity(products, popularity);
+		products = prodDao.sortProductsBySales(products, popularity);
 		if (popularity.equalsIgnoreCase("ASC")) {
 			message += " from Least to Most Popular";
 		} else {
@@ -98,13 +100,17 @@
 					%>
 					<p class="productinfo"><%=description%>..
 					</p>
+					<p>
+                        Discount ID:
+                        <%=product.getDiscountId()%>
+                    </p>
 					<p class="price">
-						Original: Rs
+						Rs
 						<%=product.getProdPrice()%>
 					</p>
 					<p class="price">
-                        Sale Price: Rs
-                        <%=product.getDiscountedPrice()%>
+                        Rs
+                        <%=product.getProdPrice()%>
                     </p>
 					<form method="post">
 						<%
