@@ -117,6 +117,30 @@
 							id="last_name" name="quantity" required>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col-md-4 form-group">
+						<label>Sale Percentage</label>
+						<select name="salePercentage" class="form-control" style="width: 80px;">
+							<option value="0">0%</option>
+							<option value="-25">-25%</option>
+							<option value="-30">-30%</option>
+							<option value="-50">-50%</option>
+						</select>
+					</div>
+					<div class="col-md-4 form-group">
+						<label>Start Date</label>
+						<input type="date" id="startDate" name="startDate" class="form-control" style="width: 120px;" required
+							   min="<%= java.time.LocalDate.now() %>"
+							   onchange="updateEndDateMin()"
+						/>
+					</div>
+					<div class="col-md-4 form-group">
+						<label>End Date</label>
+						<input type="date" id="endDate" name="endDate" class="form-control" style="width: 120px;" required
+							   min="<%= java.time.LocalDate.now() %>"
+						/>
+					</div>
+				</div>
 				<div class="row text-center">
 					<div class="col-md-4" style="margin-bottom: 2px;">
 						<button formaction="adminViewProduct.jsp" class="btn btn-danger">Cancel</button>
@@ -134,6 +158,15 @@
 			</form>
 		</div>
 	</div>
+
+	<script>
+		function updateEndDateMin() {
+			// Get the selected start date
+			var startDate = document.getElementById("startDate").value;
+			// Set the minimum date for end date to the selected start date
+			document.getElementById("endDate").min = startDate;
+		}
+	</script>
 
 	<%@ include file="footer.html"%>
 </body>

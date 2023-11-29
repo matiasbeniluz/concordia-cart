@@ -29,7 +29,25 @@ CREATE TABLE IF NOT EXISTS `shopping-cart`.`product` (
   `image` LONGBLOB NULL DEFAULT NULL,
   `pisused` BOOLEAN DEFAULT FALSE,
   `pusedproductid` VARCHAR(45) DEFAULT NULL,
-  PRIMARY KEY (`pid`))
+  `discountid` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`pid`),
+  FOREIGN KEY (`discountid`) REFERENCES `shopping-cart`.`discount` (`discountId`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `shopping-cart`.`discount`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `shopping-cart`.`discount` ;
+
+CREATE TABLE IF NOT EXISTS `shopping-cart`.`discount` (
+    `discountId` VARCHAR(45) NULL DEFAULT NULL,
+    `discountPercentage` INT NULL DEFAULT NULL,
+    `startDate` DATE,
+    `endDate` DATE,
+    UNIQUE (`discountId`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -195,7 +213,7 @@ SET `pusedproductid` = CONCAT(`pid`, 'U');
 
 -- Inserts the used products for the initial DB product entries
 INSERT INTO `shopping-cart`.`product`
-SELECT `pusedproductid`, `pname`, `ptype`, `pinfo`, `pprice` * 0.7, 0, `image`, true, null 
+SELECT `pusedproductid`, `pname`, `ptype`, `pinfo`, `pprice` * 0.7, 0, `image`, true, null , 0
 FROM `shopping-cart`.`product`
 WHERE `pid` = REPLACE(`pusedproductid`, 'U', '');
 

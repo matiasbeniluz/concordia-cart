@@ -68,10 +68,12 @@
 
 					List<ProductBean> lowStockProducts = productDao.getLowStockProduct();
 
+					List<ProductBean> unpopularProducts = productDao.getUnpopularProduct();
+
 					for (ProductBean product : products) {
 					%>
 
-					<tr class="<%=lowStockProducts.contains(product) ? "warning" : ""%>">
+					<tr class="<%=lowStockProducts.contains(product) || unpopularProducts.contains(product) ? "warning" : ""%>">
 						<td><img src="./ShowImage?pid=<%=product.getProdId()%>"
 							style="width: 50px; height: 50px;"></td>
 						<td><a

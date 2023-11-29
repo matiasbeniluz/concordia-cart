@@ -60,12 +60,13 @@ public class AddProductSrv extends HttpServlet {
 		InputStream inputStream = part.getInputStream();
 
 		InputStream prodImage = inputStream;
+		
+		String discountId = request.getParameter("discountId");
 
 		ProductServiceImpl product = new ProductServiceImpl();
 		
-
 		// Initial Product
-		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage);
+		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, discountId);
 		RequestDispatcher rd = request.getRequestDispatcher("addProduct.jsp?message=" + status);
 		rd.forward(request, response);
 		
