@@ -80,6 +80,7 @@ public class ProductBean implements Serializable {
 	public void setProdQuantity(int prodQuantity) {
 		this.prodQuantity = prodQuantity;
 	}
+	
 
 	public InputStream getProdImage() {
 		return prodImage;
@@ -108,5 +109,13 @@ public class ProductBean implements Serializable {
 		}
 
 		return this.prodId.equals(((ProductBean) obj).prodId);
+	}
+	
+	public int getUsedProductQuantity()
+	{
+		
+		
+		
+		return 0;
 	}
 }

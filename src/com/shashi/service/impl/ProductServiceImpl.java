@@ -826,5 +826,38 @@ public class ProductServiceImpl implements ProductService {
 
 		return orderedProducts;
 	}
+	
+	public int getUsedProductCount(String prodId)
+	{
+		
+		int usedProductCount = 0;
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			// Quantity
+			ps = con.prepareStatement("select pquantity from product where pid = (select pusedproductid from product where pid=?)");
+
+			ps.setString(1, prodId);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				usedProductCount = rs.getInt("pquantity");
+			}
+			
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		
+		return usedProductCount;
+	}
 
 }

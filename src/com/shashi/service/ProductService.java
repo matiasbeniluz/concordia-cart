@@ -73,4 +73,6 @@ public interface ProductService {
 	 *         If the order value is not valid, an exception will be returned.
 	 */
 	List<ProductBean> sortProductsBySales(List<ProductBean> products, String order);
+	
+	public int getUsedProductCount(String prodId);
 }

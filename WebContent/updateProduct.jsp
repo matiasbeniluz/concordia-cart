@@ -128,7 +128,7 @@
 					<div>
 					<div class="col-md-4" style="margin-top: 2px">
 						<label for="usedQuantity"># used products</label>
-						<input type="number" id="usedQuantity" value = <%=product.getProdQuantity()%>  name="usedQuantity" min="0" max="<%=product.getProdQuantity()%>">
+						<input type="number" id="usedQuantity" value = <%=new ProductServiceImpl().getUsedProductCount(product.getProdId())%>  name="usedQuantity" min="0" max="<%=(product.getIsUsed()) ? 0 : product.getProdQuantity()%>">
 					</div>
 				</div>
 			</form>
