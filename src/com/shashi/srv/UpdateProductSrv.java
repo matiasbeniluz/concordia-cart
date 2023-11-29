@@ -104,36 +104,39 @@ public class UpdateProductSrv extends HttpServlet {
 		}
 		
 		// Update the product
-		String status;
+		String status = "";
 		
 		// If the selected discount percentage is zero, set the product's discount id to null and delete the instance corresponding to this discount id from the discount table
 		// Otherwise update all the relevant info of the discount and product
-		if (salePercentage == 0) {
+		if(discount != null)
+		{
+			if (salePercentage == 0) {
 
-			// Set the product discount id to null
-			product.setDiscountId(null);
+				// Set the product discount id to null
+				product.setDiscountId(null);
 
-			status = dao.updateProductWithoutImage(prodId, product);
+				status = dao.updateProductWithoutImage(prodId, product);
 
-			// Delete the instance associated with the discount id from the discount table
-			dsi.deleteDiscountFromDB(discount.getDiscountId());
-		}
-		else {
-			discount.setDiscountPercentage(salePercentage);
-			discount.setStartDate(saleStartDate);
-			discount.setEndDate(saleEndDate);
+				// Delete the instance associated with the discount id from the discount table
+				dsi.deleteDiscountFromDB(discount.getDiscountId());
+			}
+			else {
+				discount.setDiscountPercentage(salePercentage);
+				discount.setStartDate(saleStartDate);
+				discount.setEndDate(saleEndDate);
 
-			// Set the product discount id
-			product.setDiscountId(discount.getDiscountId());
+				// Set the product discount id
+				product.setDiscountId(discount.getDiscountId());
 
-			// Update the discount in the discount table
-			dsi.updateDiscountIntoDB(discount);
+				// Update the discount in the discount table
+				dsi.updateDiscountIntoDB(discount);
 
-			// Debug:
-			System.out.println("The discount will be active for: " + discount.getRemainingTime());
-			System.out.println("The discounted price is: " + discount.discountedPrice(product.getProdPrice()));
+				// Debug:
+				System.out.println("The discount will be active for: " + discount.getRemainingTime());
+				System.out.println("The discounted price is: " + discount.discountedPrice(product.getProdPrice()));
 
-			status = dao.updateProductWithoutImage(prodId, product);
+				status = dao.updateProductWithoutImage(prodId, product);
+			}
 		}
 
 		RequestDispatcher rd = request
