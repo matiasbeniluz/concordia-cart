@@ -213,7 +213,7 @@ SET `pusedproductid` = CONCAT(`pid`, 'U');
 
 -- Inserts the used products for the initial DB product entries
 INSERT INTO `shopping-cart`.`product`
-SELECT `pusedproductid`, `pname`, `ptype`, `pinfo`, `pprice` * 0.7, 0, `image`, true, null , 0
+SELECT `pusedproductid`, `pname`, `ptype`, `pinfo`, `pprice` * 0.7, 10, `image`, true, null , null
 FROM `shopping-cart`.`product`
 WHERE `pid` = REPLACE(`pusedproductid`, 'U', '');
 

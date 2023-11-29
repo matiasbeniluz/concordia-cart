@@ -76,7 +76,7 @@
      style="color: black; font-size: 14px; font-weight: bold;"><%=message%></div>
 <div id="order-dropdown" style="text-align: center;">
     <form id="popularity-form" action="" method="get">
-        <label for="popularity" style="display: inline-block; margin-right: 10px;">Order used products products by popularity:</label>
+        <label for="popularity" style="display: inline-block; margin-right: 10px;">Order used products by popularity:</label>
         <select id="popularity" name="popularity" style="display: inline-block;" onchange="this.form.submit()">
             <option value="" <%= popularity == null || popularity.isEmpty() ? "selected" : "" %>>None</option>
             <option value="ASC"  <%= popularity != null && popularity.equals("ASC") ? "selected" : "" %>>Ascending</option>
@@ -113,6 +113,7 @@
                     Rs
                     <%=product.getProdPrice()%>
                 </p>
+
                 <form method="post">
                     <%
                         if (cartQty == 0) {
