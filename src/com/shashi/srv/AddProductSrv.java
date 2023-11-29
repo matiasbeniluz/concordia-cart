@@ -57,9 +57,11 @@ public class AddProductSrv extends HttpServlet {
 
 		boolean isUsed = Boolean.parseBoolean(request.getParameter("used"));
 
+		String discountId = request.getParameter("discountId");
+
 		ProductServiceImpl product = new ProductServiceImpl();
 
-		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed);
+		status = product.addProduct(prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed, discountId);
 
 		RequestDispatcher rd = request.getRequestDispatcher("addProduct.jsp?message=" + status);
 		rd.forward(request, response);

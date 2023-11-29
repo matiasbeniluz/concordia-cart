@@ -24,11 +24,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public String addProduct(String prodName, String prodType, String prodInfo, double prodPrice, int prodQuantity,
-							 InputStream prodImage, boolean isUsed) {
+							 InputStream prodImage, boolean isUsed, String discountId) {
 		String status = null;
 		String prodId = IDUtil.generateId();
 
-		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed);
+		ProductBean product = new ProductBean(prodId, prodName, prodType, prodInfo, prodPrice, prodQuantity, prodImage, isUsed, discountId);
 
 		status = addProduct(product);
 
@@ -410,6 +410,55 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	public List<ProductBean> getUnpopularProduct() {
+		List<ProductBean> products = new ArrayList<>();
+		int defaultThreshold = 3;
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("SELECT * FROM product p WHERE p.discountid IS NULL AND p.pid IN (SELECT o.prodid FROM orders o GROUP BY o.prodid HAVING SUM(o.quantity) < ?);");
+
+			ps.setInt(1, defaultThreshold);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ProductBean product = new ProductBean();
+
+				product.setProdId(rs.getString(1));
+				product.setProdName(rs.getString(2));
+				product.setProdType(rs.getString(3));
+				product.setProdInfo(rs.getString(4));
+				product.setProdPrice(rs.getDouble(5));
+				product.setProdQuantity(rs.getInt(6));
+				product.setProdImage(rs.getAsciiStream(7));
+				product.setIsUsed(rs.getBoolean(8));
+				product.setDiscountId(rs.getString(9));
+
+				products.add(product);
+
+			}
+
+
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			DBUtil.closeConnection(con);
+			DBUtil.closeConnection(ps);
+			DBUtil.closeConnection(rs);
+		}
+
+		return products;
+	}
+
+	@Override
 	public List<ProductBean> searchAllProducts(String search) {
 		List<ProductBean> products = new ArrayList<ProductBean>();
 
@@ -556,6 +605,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProdPrice(rs.getDouble(5));
 				product.setProdQuantity(rs.getInt(6));
 				product.setProdImage(rs.getAsciiStream(7));
+				product.setDiscountId(rs.getString(9));
 			}
 
 		} catch (SQLException e) {
@@ -586,14 +636,15 @@ public class ProductServiceImpl implements ProductService {
 		PreparedStatement ps = null;
 
 		try {
-			ps = con.prepareStatement("update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=? where pid=?");
+			ps = con.prepareStatement("update product set pname=?,ptype=?,pinfo=?,pprice=?,pquantity=?,discountid=? where pid=?");
 
 			ps.setString(1, updatedProduct.getProdName());
 			ps.setString(2, updatedProduct.getProdType());
 			ps.setString(3, updatedProduct.getProdInfo());
 			ps.setDouble(4, updatedProduct.getProdPrice());
 			ps.setInt(5, updatedProduct.getProdQuantity());
-			ps.setString(6, prevProductId);
+			ps.setString(6, updatedProduct.getDiscountId());
+			ps.setString(7, prevProductId);
 
 			int k = ps.executeUpdate();
 			// System.out.println("prevQuantity: "+prevQuantity);
