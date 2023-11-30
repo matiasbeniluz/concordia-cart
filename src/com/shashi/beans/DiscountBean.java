@@ -103,4 +103,13 @@ public class DiscountBean {
         else
             return "Sale dates are not set";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DiscountBean)) {
+            return false;
+        }
+
+        return this.discountId.equals(((DiscountBean) obj).getDiscountId());
+    }
 }
