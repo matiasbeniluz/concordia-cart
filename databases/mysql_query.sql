@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `shopping-cart`.`product` (
   `pusedproductid` VARCHAR(45) DEFAULT NULL,
   `discountid` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`pid`),
-  FOREIGN KEY (`discountid`) REFERENCES `shopping-cart`.`discount` (`discountId`))
+  FOREIGN KEY (`discountid`) REFERENCES `shopping-cart`.`discount` (`discountId`) ON DELETE SET NULL)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -43,11 +43,13 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `shopping-cart`.`discount` ;
 
 CREATE TABLE IF NOT EXISTS `shopping-cart`.`discount` (
-    `discountId` VARCHAR(45) NULL DEFAULT NULL,
+    `discountId` VARCHAR(45) NOT NULL,
+    `discountName` VARCHAR(100) NULL DEFAULT NULL,
     `discountPercentage` INT NULL DEFAULT NULL,
     `startDate` DATE,
     `endDate` DATE,
-    UNIQUE (`discountId`))
+    PRIMARY KEY (`discountId`),
+    UNIQUE (`discountName`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
