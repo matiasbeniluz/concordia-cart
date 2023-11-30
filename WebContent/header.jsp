@@ -197,6 +197,7 @@
 							<li><a href="addProduct.jsp">Add Product</a></li>
 							<li><a href="removeProduct.jsp">Remove Product</a></li>
 							<li><a href="updateProductById.jsp">Update Product</a></li>
+
 						</ul></li>
 					<li><a href="manageDiscounts.jsp">Discounts</a></li>
 					<li class="dropdown">
@@ -210,7 +211,6 @@
 						</ul>
 					</li>
 					<li><a href="./LogoutSrv">Logout</a></li>
-
 				</ul>
 			</div>
 		</div>
