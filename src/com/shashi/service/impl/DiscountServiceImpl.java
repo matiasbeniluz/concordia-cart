@@ -3,6 +3,7 @@ package com.shashi.service.impl;
 import com.shashi.beans.DiscountBean;
 import com.shashi.service.DiscountService;
 import com.shashi.utility.DBUtil;
+import com.shashi.utility.IDUtil;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,6 +11,67 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiscountServiceImpl implements DiscountService {
+	
+	
+	@Override
+	public String addDiscount(String discountName, int discountPercent, LocalDate startDate, LocalDate endDate)
+	{
+		String result = "Null";
+		
+		String discountId = IDUtil.generateDiscountId();
+		
+		DiscountBean discount = new DiscountBean(discountId, discountName, discountPercent, startDate, endDate);
+		
+		result = addDiscount(discount);
+		
+		return result;
+	}
+	
+	
+	@Override
+	public String addDiscount(DiscountBean discount)
+	{
+		String status = "Product Registration Failed!";
+
+		if (discount.getDiscountId() == null)
+			discount.setDiscountId(IDUtil.generateId());
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+
+		try {
+			ps = con.prepareStatement("insert into discount values(?,?,?,?,?);");
+			ps.setString(1, discount.getDiscountId());
+			ps.setString(2, discount.getDiscountName());
+			ps.setDouble(3, discount.getDiscountPercentage());
+			ps.setDate(4, java.sql.Date.valueOf(discount.getStartDate()));
+			ps.setDate(5, java.sql.Date.valueOf(discount.getEndDate()));
+
+			int k = ps.executeUpdate();
+
+			if (k > 0) 
+			{
+				status = "Discount Added Successfully with Discount Id: " + discount.getDiscountId();
+
+			} 
+			else 
+			{
+				status = "Discount Updation Failed!";
+			}	
+
+		} catch (SQLException e) {
+			status = "Error: " + e.getMessage();
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+
+		return status;
+	}
+	
+	
     @Override
     public void updateDiscountIntoDB(DiscountBean discount) {
         Connection con = DBUtil.provideConnection();
