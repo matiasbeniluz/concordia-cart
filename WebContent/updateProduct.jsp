@@ -99,9 +99,9 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="last_name">Product Description</label>
+					<label for="product_description">Product Description</label>
 					<textarea name="info" class="form-control text-align-left"
-						id="last_name" required><%=product.getProdInfo()%></textarea>
+						id="product_description" required><%=product.getProdInfo()%></textarea>
 				</div>
 				<div class="row">
 					<div class="col-md-6 form-group">
@@ -120,7 +120,7 @@
 				<div class="row">
 					<div class="col-md-12 form-group">
 						<label for="discountId">Discount</label>
-						<select name="discountId" id="discountId" class="form-control" required>
+						<select name="discountId" id="discountId" class="form-control">
 							<!-- Option for None -->
 							<option value="">None</option>
 
