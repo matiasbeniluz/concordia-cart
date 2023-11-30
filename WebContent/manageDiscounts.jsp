@@ -57,13 +57,15 @@
             <tbody style="background-color: white; font-size: 16px;">
 
             <%
-                DiscountServiceImpl discountDao = new DiscountServiceImpl();
+                DiscountService discountDao = new DiscountServiceImpl();
                 List<DiscountBean> discounts = discountDao.getAllDiscounts();
+
+                List<DiscountBean> expiredDiscounts = discountDao.getExpiredDiscounts();
 
                 for (DiscountBean discount : discounts) {
             %>
 
-            <tr>
+            <tr class="<%=expiredDiscounts.contains(discount) ? "warning" : ""%>">
                 <td>
                     <a href="./updateDiscount.jsp?discountid=<%=discount.getDiscountId()%>">
                         <%=discount.getDiscountId()%>

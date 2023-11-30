@@ -239,6 +239,33 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
+    public List<DiscountBean> getExpiredDiscounts() {
+        Date currentDate = Date.valueOf(LocalDate.now());
+        String query = "SELECT * FROM `discount` WHERE `endDate` < ?";
+        List<DiscountBean> discounts = new ArrayList<>();
+
+        try (Connection con = DBUtil.provideConnection()) {
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setDate(1, currentDate);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                DiscountBean discount = new DiscountBean();
+                discount.setDiscountId(rs.getString("discountId"));
+                discount.setDiscountName(rs.getString("discountName"));
+                discount.setDiscountPercentage(rs.getInt("discountPercentage"));
+                discount.setStartDate(rs.getDate("startDate").toLocalDate());
+                discount.setEndDate(rs.getDate("endDate").toLocalDate());
+
+                discounts.add(discount);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return discounts;
+    }
+
+    @Override
     public void deleteExpiredDiscounts() {
         Date currentDate = Date.valueOf(LocalDate.now());
         String query = "DELETE FROM `discount` WHERE `endDate` < ?";
