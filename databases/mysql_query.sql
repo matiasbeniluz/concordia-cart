@@ -271,4 +271,16 @@ INSERT INTO `shopping-cart`.`usercart` (`username`, `prodid`, `quantity`) VALUES
 COMMIT;
 
 
+-- -----------------------------------------------------
+-- Data for table `shopping-cart`.`discount`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `shopping-cart`;
+INSERT INTO `shopping-cart`.`discount` (`discountId`, `discountPercentage`, `startDate`, `endDate`) VALUES ('D20230423082243', 5, '2023-04-23', null);
+INSERT INTO `shopping-cart`.`discount` (`discountId`, `discountPercentage`, `startDate`, `endDate`) VALUES ('D20230523082243', 10, '2023-05-23', '2023-05-24');
+INSERT INTO `shopping-cart`.`discount` (`discountId`, `discountPercentage`, `startDate`, `endDate`) VALUES ('D20230623082243', 15, '2023-05-23', null);
+
+COMMIT;
+
+
 
