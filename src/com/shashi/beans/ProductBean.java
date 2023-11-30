@@ -16,7 +16,6 @@ public class ProductBean implements Serializable {
 	private String prodType;
 	private String prodInfo;
 	private double prodPrice;
-	private boolean onSale = false;
 	private int prodQuantity;
 	private InputStream prodImage;
 	private boolean isUsed;
@@ -34,8 +33,6 @@ public class ProductBean implements Serializable {
 		this.prodPrice = prodPrice;
 		this.prodQuantity = prodQuantity;
 		this.prodImage = prodImage;
-
-		this.onSale = false;
 		this.isUsed = isUsed;
 	}
 
