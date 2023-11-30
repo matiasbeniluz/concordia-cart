@@ -39,19 +39,19 @@ class DiscountServiceImplTest {
         discountService = new DiscountServiceImpl();
 
 
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 0; i <= 3; i++) {
             String discountId = String.valueOf(i);
             String discountName = "Discount " + i;
             int discountPercentage = (i * 5) + 5;  // Generating a percentage based on the index
             LocalDate startDate = LocalDate.now().plusDays(i * 10);
             LocalDate endDate = LocalDate.now().plusDays((i * 10) + 30);
 
-            DiscountBean discount = new DiscountBean(discountId,  discountPercentage, startDate, endDate);
+            DiscountBean discount = new DiscountBean(discountId, discountName, discountPercentage, startDate, endDate);
             discounts.add(discount);
         }
 
         for (DiscountBean discount : discounts) {
-            discountService.updateDiscountIntoDB(discount);
+            discountService.updateDiscountIntoDB(discount.getDiscountId(), discount);
         }
     }
 
@@ -75,10 +75,11 @@ class DiscountServiceImplTest {
 
     @Test
     void updateDiscount_ShouldUpdateDiscount() {
+
         DiscountBean discountToUpdate = discountService.getDiscountDetails("1");
         discountToUpdate.setDiscountPercentage(20);
 
-        discountService.updateDiscountIntoDB(discountToUpdate);
+        discountService.updateDiscountIntoDB("1",discountToUpdate);
 
 
         DiscountBean updatedDiscount = discountService.getDiscountDetails("1");
@@ -88,21 +89,21 @@ class DiscountServiceImplTest {
 
     @Test
     void updateDiscount_ShouldReturnFalseForNonExistentDiscount() {
-        DiscountBean nonExistentDiscount = new DiscountBean("Non-Existent Discount", 5, LocalDate.now(), LocalDate.now().plusDays(30));
+        DiscountBean nonExistentDiscount = new DiscountBean("5","Non-Existent Discount", 20,LocalDate.now(), LocalDate.now().plusDays(30));
 
-        discountService.updateDiscountIntoDB(nonExistentDiscount);
+        discountService.updateDiscountIntoDB("5",nonExistentDiscount);
     }
 
     @Test
     void deleteDiscount_ShouldDeleteDiscount() {
-        discountService.deleteDiscountFromDB("1");
+        discountService.removeDiscount("1");
 
         DiscountBean deletedDiscount = discountService.getDiscountDetails("1");
     }
 
     @Test
     void deleteDiscount_ShouldReturnFalseForNonExistentDiscount() {
-        discountService.deleteDiscountFromDB("999");
+        discountService.removeDiscount("999");
     }
 
     
