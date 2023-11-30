@@ -43,7 +43,7 @@ public interface DiscountService {
      * Method to delete a discount from the DB
      * @param discountId discount id
      */
-    void deleteDiscountFromDB(String discountId);
+    String removeDiscount(String discountId);
 
     /**
      * Get active discounts

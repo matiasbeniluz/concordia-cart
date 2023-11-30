@@ -226,9 +226,11 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public void deleteDiscountFromDB(String discountId) {
+    public String removeDiscount(String discountId) {
         Connection con = DBUtil.provideConnection();
         PreparedStatement ps = null;
+        
+        String result = "Error in removing discount";
 
         try {
 
@@ -237,12 +239,16 @@ public class DiscountServiceImpl implements DiscountService {
             ps = con.prepareStatement(deleteQuery);
             ps.setString(1, discountId);
             ps.executeUpdate();
+            
+            result = "Discount removed Successfully";
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             DBUtil.closeConnection(con);
             DBUtil.closeConnection(ps);
         }
+        
+        return result;
     }
 
     @Override
