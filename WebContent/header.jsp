@@ -121,6 +121,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="userHome.jsp"><span
 							class="glyphicon glyphicon-home">Products</span></a></li>
+					<li><a href="usedProducts.jsp">Used Products</a></li>
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Category <span class="caret"></span>
 					</a>

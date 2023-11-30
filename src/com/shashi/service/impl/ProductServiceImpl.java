@@ -220,14 +220,16 @@ public class ProductServiceImpl implements ProductService {
 
 				ProductBean product = new ProductBean();
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 
 				products.add(product);
 
@@ -262,14 +264,16 @@ public class ProductServiceImpl implements ProductService {
 
 				ProductBean product = new ProductBean();
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 
 				products.add(product);
 
@@ -305,16 +309,16 @@ public class ProductServiceImpl implements ProductService {
 
 				ProductBean product = new ProductBean();
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
-				product.setUsedProdId(rs.getString(9));
-				product.setDiscountId(rs.getString(10));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 
 				products.add(product);
 
@@ -349,16 +353,16 @@ public class ProductServiceImpl implements ProductService {
 
 				ProductBean product = new ProductBean();
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
-				product.setUsedProdId(rs.getString(9));
-				product.setDiscountId(rs.getString(10));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 
 				products.add(product);
 
@@ -402,16 +406,16 @@ public class ProductServiceImpl implements ProductService {
 
 				ProductBean product = new ProductBean();
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
-				product.setUsedProdId(rs.getString(9));
-				product.setDiscountId(rs.getString(10));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 
 				products.add(product);
 
@@ -449,15 +453,16 @@ public class ProductServiceImpl implements ProductService {
 
 				ProductBean product = new ProductBean();
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
-				product.setDiscountId(rs.getString(9));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 
 				products.add(product);
 
@@ -499,16 +504,16 @@ public class ProductServiceImpl implements ProductService {
 
 				ProductBean product = new ProductBean();
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
-				product.setUsedProdId(rs.getString(9));
-				product.setDiscountId(rs.getString(10));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 				
 				products.add(product);
 
@@ -547,16 +552,16 @@ public class ProductServiceImpl implements ProductService {
 
 				ProductBean product = new ProductBean();
 
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setIsUsed(rs.getBoolean(8));
-				product.setUsedProdId(rs.getString(9));
-				product.setDiscountId(rs.getString(10));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 				
 				products.add(product);
 
@@ -621,15 +626,16 @@ public class ProductServiceImpl implements ProductService {
 
 			if (rs.next()) {
 				product = new ProductBean();
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-				product.setUsedProdId(rs.getString(9));
-				product.setDiscountId(rs.getString(10));
+				product.setProdId(rs.getString("pid"));
+				product.setProdName(rs.getString("pname"));
+				product.setProdType(rs.getString("ptype"));
+				product.setProdInfo(rs.getString("pinfo"));
+				product.setProdPrice(rs.getDouble("pprice"));
+				product.setProdQuantity(rs.getInt("pquantity"));
+				product.setProdImage(rs.getAsciiStream("image"));
+				product.setIsUsed(rs.getBoolean("pisused"));
+				product.setUsedProdId(rs.getString("pusedproductid"));
+				product.setDiscountId(rs.getString("discountid"));
 			}
 
 		} catch (SQLException e) {
