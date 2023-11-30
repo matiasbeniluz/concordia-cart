@@ -23,7 +23,7 @@ class DiscountServiceImplTest {
 
     private DiscountServiceImpl discountService;
 
-    private List<DiscountBean> discounts= new ArrayList<>();;
+    private List<DiscountBean> discounts= new ArrayList<>();
 
     @BeforeEach
     void setUp() {

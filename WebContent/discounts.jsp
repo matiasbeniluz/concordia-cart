@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page
-	import="com.shashi.service.impl.*, com.shashi.service.*,com.shashi.beans.*,java.util.*,javax.servlet.ServletOutputStream,java.io.*"%>
+	import="com.shashi.service.impl.*, com.shashi.service.*,com.shashi.beans.*,java.util.*,javax.servlet.ServletOutputStream,java.io.*,java.time.*"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,11 +34,12 @@
 	ProductServiceImpl prodDao = new ProductServiceImpl();
 	List<ProductBean> products = new ArrayList<ProductBean>();
 	DiscountServiceImpl dsi = new DiscountServiceImpl();
+	List<DiscountBean> discounts = new ArrayList<DiscountBean>();
 
 	String search = request.getParameter("search");
 	String type = request.getParameter("type");
 	String popularity = request.getParameter("popularity");
-	String message = "All Products";
+	String message = "Discount Products";
 	if (search != null) {
 		products = prodDao.searchAllProducts(search);
 		message = "Showing Results for '" + search + "'";
@@ -87,8 +88,25 @@
 			<%
 			for (ProductBean product : products) {
 				int cartQty = new CartServiceImpl().getCartItemCount(userName, product.getProdId());
+				String discountId = product.getProdId() +"_discount";
+				int percentage = 50;
+				LocalDate startDate = LocalDate.now().plusDays(1);
+
+                double randomDouble = Math.random();
+                int min = 0;
+                int max = 100;
+                int randomNumber = (int) (randomDouble * (max - min + 1)) + min;
+                LocalDate endDate = LocalDate.now().plusDays(randomNumber);
+                DiscountBean discount = new DiscountBean(discountId, percentage, startDate, endDate);
+                discounts.add(discount);
+                product.setDiscountId(discountId);
+                product.setDiscount(true,percentage*product.getProdPrice()*0.01);
+                dsi.updateDiscountIntoDB(discount);
 			%>
-			<div class="col-sm-4" style='height: 350px;'>
+			<%
+
+			%>
+			<div class="col-sm-4" style='height: 450px;'>
 				<div class="thumbnail">
 					<img src="./ShowImage?pid=<%=product.getProdId()%>" alt="Product"
 						style="height: 150px; max-width: 180px">
@@ -105,12 +123,18 @@
                         <%=product.getDiscountId()%>
                     </p>
 					<p class="price">
-						Rs
-						<%=product.getProdPrice()%>
+						On Sale: Rs
+						<%=product.getDiscountedPrice()%>
 					</p>
-					<p class="price">
-                        Rs
+					<p class="productname">
+                        Original: Rs
                         <%=product.getProdPrice()%>
+                    </p>
+                    <p>
+                        From:
+                        <%=dsi.getDiscountDetails(product.getDiscountId()).getStartDate()%>
+                         - Until:
+                        <%=dsi.getDiscountDetails(product.getDiscountId()).getEndDate()%>
                     </p>
 					<form method="post">
 						<%

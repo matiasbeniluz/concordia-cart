@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DiscountServiceImpl {
     public void updateDiscountIntoDB(DiscountBean discount) {
@@ -140,5 +143,41 @@ public class DiscountServiceImpl {
 			DBUtil.closeConnection(con);
 			DBUtil.closeConnection(ps);
 		}
+	}
+	public List<DiscountBean> getAllDiscountItems() {
+		List<DiscountBean> discountItems = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			// Establish a database connection
+			connection = DBUtil.provideConnection();
+
+			// SQL query to retrieve all discount items
+			String sql = "SELECT discountId, discountName, discountPercentage, startDate, endDate FROM discounts";
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				String discountId = resultSet.getString("discountId");
+				String discountName = resultSet.getString("discountName");
+				int discountPercentage = resultSet.getInt("discountPercentage");
+				LocalDate startDate = resultSet.getDate("startDate").toLocalDate();
+				LocalDate endDate = resultSet.getDate("endDate").toLocalDate();
+
+				// Create a DiscountBean object and add it to the list
+				DiscountBean discountItem = new DiscountBean(discountId, discountPercentage, startDate, endDate);
+				discountItems.add(discountItem);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Close the database resources
+			DBUtil.closeConnection(connection);
+		}
+
+		return discountItems;
 	}
 }
