@@ -101,13 +101,12 @@
                 discount.setDiscountPercentage(percentage);
                 discounts.add(discount);
                 product.setDiscountId(discountId);
-                product.setDiscount(true,percentage*product.getProdPrice()*0.01);
                 dsi.updateDiscountIntoDB(discount);
 			%>
 			<%
 
 			%>
-			<div class="col-sm-4" style='height: 450px;'>
+			<div class="col-sm-4" style='height: 550px;'>
 				<div class="thumbnail">
 					<img src="./ShowImage?pid=<%=product.getProdId()%>" alt="Product"
 						style="height: 150px; max-width: 180px">
