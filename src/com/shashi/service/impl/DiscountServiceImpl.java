@@ -354,4 +354,9 @@ public class DiscountServiceImpl implements DiscountService {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean isActiveDiscount(DiscountBean discount) {
+        return !discount.getStartDate().isAfter(LocalDate.now()) && !discount.getEndDate().isBefore(LocalDate.now());
+    }
 }
