@@ -37,12 +37,6 @@ public class ProductBean implements Serializable {
 		this.isUsed = isUsed;
 	}
 
-	public void setDiscount(boolean ifActive, double price){
-		this.onSale = ifActive;
-		this.isUsed = isUsed;
-		this.usedProdId = usedProdId;
-		this.discountId = discountId;
-	}
 
 	public String getProdId() {
 		return prodId;
