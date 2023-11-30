@@ -163,9 +163,8 @@
 	<script>
 		function updateEndDateMin() {
 			// Get the selected start date
-			var startDate = document.getElementById("startDate").value;
 			// Set the minimum date for end date to the selected start date
-			document.getElementById("endDate").min = startDate;
+			document.getElementById("endDate").min = document.getElementById("startDate").value;
 		}
 	</script>
 
