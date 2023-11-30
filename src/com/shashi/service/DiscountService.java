@@ -2,16 +2,21 @@ package com.shashi.service;
 
 import com.shashi.beans.DiscountBean;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface DiscountService {
 
+	String addDiscount(String discountName, int discountPercent, LocalDate startDate, LocalDate endDate);
+	
+	String addDiscount(DiscountBean discount);
+	
     /**
      * Update discount information
      *
      * @param discount discount to update
      */
-    void updateDiscountIntoDB(DiscountBean discount);
+	public String updateDiscountIntoDB(String did, DiscountBean discount);
 
     /**
      * Given the discount id, return the discount associated with it
@@ -38,7 +43,7 @@ public interface DiscountService {
      * Method to delete a discount from the DB
      * @param discountId discount id
      */
-    void deleteDiscountFromDB(String discountId);
+    String removeDiscount(String discountId);
 
     /**
      * Get active discounts

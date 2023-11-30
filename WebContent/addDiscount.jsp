@@ -43,7 +43,7 @@
     <div class="row"
          style="margin-top: 5px; margin-left: 2px; margin-right: 2px;">
         <form action="./AddDiscountSrv" method="post"
-              enctype="multipart/form-data" class="col-md-6 col-md-offset-3"
+              class="col-md-6 col-md-offset-3"
               style="border: 2px solid black; border-radius: 10px; background-color: #FFE5CC; padding: 10px;">
             <div style="font-weight: bold;" class="text-center">
                 <h2 style="color: green;">Discount Addition Form</h2>
@@ -61,13 +61,13 @@
                 <div class="col-md-6 form-group">
                     <label for="discount_percentage">Percentage</label>
                     <input type="number"
-                           placeholder="Enter Percentage" name="discount_percentage" class="form-control"
+                           placeholder="Enter Percentage" name="percent" class="form-control"
                            id="discount_percentage" required>
                 </div>
                 <div class="col-md-6 form-group">
                     <label for="discount_name">Name</label>
                     <input type="text"
-                           placeholder="Enter Name" name="discount_name" class="form-control"
+                           placeholder="Enter Name" name="name" class="form-control"
                            id="discount_name" required>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                 <div class="col-md-6 form-group">
                     <label for="start_date">Start Date</label>
                     <input type="date"
-                           placeholder="Enter Start Date" name="start_date" class="form-control"
+                           placeholder="Enter Start Date" name="start" class="form-control"
                            id="start_date"
                            onchange="updateEndDateMin()"
                            required>
@@ -83,7 +83,7 @@
                 <div class="col-md-6 form-group">
                     <label for="end_date">End Date</label>
                     <input type="date"
-                           placeholder="Enter Start Date" name="start_date" class="form-control"
+                           placeholder="Enter Start Date" name="end" class="form-control"
                            id="end_date">
                 </div>
             </div>
