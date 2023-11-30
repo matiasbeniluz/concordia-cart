@@ -1,8 +1,6 @@
 package com.shashi.service.impl;
 
 import com.shashi.beans.DiscountBean;
-import com.shashi.beans.ProductBean;
-import com.shashi.service.CartService;
 import com.shashi.service.DiscountService;
 import com.shashi.utility.DBUtil;
 
@@ -32,17 +30,17 @@ public class DiscountServiceImpl implements DiscountService {
             }
             else {
 
-				// Insert a new discount
-				String insertQuery = "INSERT INTO discount (discountId, discountPercentage, startDate, endDate) VALUES (?, ?, ?, ?)";
-				ps = con.prepareStatement(insertQuery);
-				ps.setString(1, discount.getDiscountId());
-				ps.setDouble(2, discount.getDiscountPercentage());
-				ps.setDate(3, java.sql.Date.valueOf(discount.getStartDate()));
-				ps.setDate(4, java.sql.Date.valueOf(discount.getEndDate()));
+                // Insert a new discount
+                String insertQuery = "INSERT INTO discount (discountId, discountPercentage, startDate, endDate) VALUES (?, ?, ?, ?)";
+                ps = con.prepareStatement(insertQuery);
+                ps.setString(1, discount.getDiscountId());
+                ps.setDouble(2, discount.getDiscountPercentage());
+                ps.setDate(3, java.sql.Date.valueOf(discount.getStartDate()));
+                ps.setDate(4, java.sql.Date.valueOf(discount.getEndDate()));
             }
 
-			// Execute the update or insert query
-			int rowsAffected = ps.executeUpdate();
+            // Execute the update or insert query
+            int rowsAffected = ps.executeUpdate();
 
 //			// Check the result (optional)
 //			if (rowsAffected > 0) {
@@ -50,140 +48,135 @@ public class DiscountServiceImpl implements DiscountService {
 //			} else {
 //				System.out.println("Failed to update/insert discount.");
 //			}
-        }
-        catch (SQLException e) {
-			e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         DBUtil.closeConnection(con);
         DBUtil.closeConnection(ps);
     }
 
-	/**
-	 * Check if a discount already exists in the DB
-	 * @param discountId discountId
-	 * @return isFound
-	 */
-	private boolean discountExists(String discountId) {
-		Connection con = DBUtil.provideConnection();
+    /**
+     * Check if a discount already exists in the DB
+     *
+     * @param discountId discountId
+     * @return isFound
+     */
+    private boolean discountExists(String discountId) {
+        Connection con = DBUtil.provideConnection();
 
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-		try {
+        try {
 
-			// Query to check if a discount exists in the DB
-			String query = "SELECT COUNT(*) FROM discount WHERE discountId=?";
-			ps = con.prepareStatement(query);
-			ps.setString(1, discountId);
-			rs = ps.executeQuery();
+            // Query to check if a discount exists in the DB
+            String query = "SELECT COUNT(*) FROM discount WHERE discountId=?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, discountId);
+            rs = ps.executeQuery();
 
-			// Check if any rows were returned (discount exists)
-			if (rs.next()) {
-				int count = rs.getInt(1);
-				return count > 0;
-			}
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		finally {
-			DBUtil.closeConnection(con);
-			DBUtil.closeConnection(ps);
-		}
+            // Check if any rows were returned (discount exists)
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.closeConnection(con);
+            DBUtil.closeConnection(ps);
+        }
 
-		return false; // Return false in case of an error or no discount found
-	}
+        return false; // Return false in case of an error or no discount found
+    }
 
-	public DiscountBean getDiscountDetails(String discountId) {
-		DiscountBean discount = null;
+    public DiscountBean getDiscountDetails(String discountId) {
+        DiscountBean discount = null;
 
-		Connection con = DBUtil.provideConnection();
+        Connection con = DBUtil.provideConnection();
 
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-		try {
-			ps = con.prepareStatement("select * from discount where discountId=?");
+        try {
+            ps = con.prepareStatement("select * from discount where discountId=?");
 
-			ps.setString(1, discountId);
-			rs = ps.executeQuery();
+            ps.setString(1, discountId);
+            rs = ps.executeQuery();
 
-			if (rs.next()) {
-				discount = new DiscountBean();
-				discount.setDiscountId(rs.getString(1));
-				discount.setDiscountPercentage(rs.getInt(2));
-				discount.setStartDate(rs.getDate(3).toLocalDate());
-				discount.setEndDate(rs.getDate(4).toLocalDate());
-			}
+            if (rs.next()) {
+                discount = new DiscountBean();
+                discount.setDiscountId(rs.getString(1));
+                discount.setDiscountPercentage(rs.getInt(2));
+                discount.setStartDate(rs.getDate(3).toLocalDate());
+                discount.setEndDate(rs.getDate(4).toLocalDate());
+            }
 
-		}
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		DBUtil.closeConnection(con);
-		DBUtil.closeConnection(ps);
+        DBUtil.closeConnection(con);
+        DBUtil.closeConnection(ps);
 
-		return discount;
-	}
+        return discount;
+    }
 
-	public List<DiscountBean> getAllDiscounts() {
-		List<DiscountBean> discounts = new ArrayList<>();
+    public List<DiscountBean> getAllDiscounts() {
+        List<DiscountBean> discounts = new ArrayList<>();
 
-		Connection con = DBUtil.provideConnection();
+        Connection con = DBUtil.provideConnection();
 
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-		try {
-			ps = con.prepareStatement("select * from discount;");
+        try {
+            ps = con.prepareStatement("select * from discount;");
 
-			rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
-			while (rs.next()) {
+            while (rs.next()) {
 
-				DiscountBean discount = new DiscountBean(
-						rs.getString(1),
-						rs.getInt(2),
-						rs.getDate(3).toLocalDate(),
-						rs.getDate(4).toLocalDate()
-				);
+                DiscountBean discount = new DiscountBean(
+                        rs.getString(1),
+                        rs.getInt(2),
+                        rs.getDate(3).toLocalDate(),
+                        rs.getDate(4).toLocalDate()
+                );
 
-				discounts.add(discount);
+                discounts.add(discount);
 
-			}
+            }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		DBUtil.closeConnection(con);
-		DBUtil.closeConnection(ps);
-		DBUtil.closeConnection(rs);
+        DBUtil.closeConnection(con);
+        DBUtil.closeConnection(ps);
+        DBUtil.closeConnection(rs);
 
-		return discounts;
-	}
+        return discounts;
+    }
 
-	// Method to delete a discount from the DB
-	public void deleteDiscountFromDB(String discountId) {
-		Connection con = DBUtil.provideConnection();
-		PreparedStatement ps = null;
+    // Method to delete a discount from the DB
+    public void deleteDiscountFromDB(String discountId) {
+        Connection con = DBUtil.provideConnection();
+        PreparedStatement ps = null;
 
-		try {
+        try {
 
-			// Delete the discount entry
-			String deleteQuery = "DELETE FROM discount WHERE discountId=?";
-			ps = con.prepareStatement(deleteQuery);
-			ps.setString(1, discountId);
-			ps.executeUpdate();
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		finally {
-			DBUtil.closeConnection(con);
-			DBUtil.closeConnection(ps);
-		}
-	}
+            // Delete the discount entry
+            String deleteQuery = "DELETE FROM discount WHERE discountId=?";
+            ps = con.prepareStatement(deleteQuery);
+            ps.setString(1, discountId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.closeConnection(con);
+            DBUtil.closeConnection(ps);
+        }
+    }
 }
