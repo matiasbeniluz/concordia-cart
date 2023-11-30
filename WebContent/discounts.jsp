@@ -98,6 +98,7 @@
                 int randomNumber = (int) (randomDouble * (max - min + 1)) + min;
                 LocalDate endDate = LocalDate.now().plusDays(randomNumber);
                 DiscountBean discount = new DiscountBean(discountId, percentage, startDate, endDate);
+                discount.setDiscountPercentage(percentage);
                 discounts.add(discount);
                 product.setDiscountId(discountId);
                 product.setDiscount(true,percentage*product.getProdPrice()*0.01);
@@ -124,7 +125,7 @@
                     </p>
 					<p class="price">
 						On Sale: Rs
-						<%=product.getDiscountedPrice()%>
+						<%=dsi.getDiscountDetails(product.getDiscountId()).discountedPrice(product.getProdPrice())%>
 					</p>
 					<p class="productname">
                         Original: Rs
