@@ -1,14 +1,19 @@
 package com.shashi.service.impl;
 
 import com.shashi.beans.DiscountBean;
+import com.shashi.beans.ProductBean;
+import com.shashi.service.CartService;
+import com.shashi.service.DiscountService;
 import com.shashi.utility.DBUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DiscountServiceImpl {
+public class DiscountServiceImpl implements DiscountService {
     public void updateDiscountIntoDB(DiscountBean discount) {
         Connection con = DBUtil.provideConnection();
 
@@ -53,7 +58,11 @@ public class DiscountServiceImpl {
         DBUtil.closeConnection(ps);
     }
 
-    // Method to check if a discount already exists in the DB
+	/**
+	 * Check if a discount already exists in the DB
+	 * @param discountId discountId
+	 * @return isFound
+	 */
 	private boolean discountExists(String discountId) {
 		Connection con = DBUtil.provideConnection();
 
@@ -85,7 +94,6 @@ public class DiscountServiceImpl {
 		return false; // Return false in case of an error or no discount found
 	}
 
-	// Given the discount id, return the discount associated with it
 	public DiscountBean getDiscountDetails(String discountId) {
 		DiscountBean discount = null;
 
@@ -118,6 +126,43 @@ public class DiscountServiceImpl {
 		DBUtil.closeConnection(ps);
 
 		return discount;
+	}
+
+	public List<DiscountBean> getAllDiscounts() {
+		List<DiscountBean> discounts = new ArrayList<>();
+
+		Connection con = DBUtil.provideConnection();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = con.prepareStatement("select * from discount;");
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				DiscountBean discount = new DiscountBean(
+						rs.getString(1),
+						rs.getInt(2),
+						rs.getDate(3).toLocalDate(),
+						rs.getDate(4).toLocalDate()
+				);
+
+				discounts.add(discount);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		DBUtil.closeConnection(con);
+		DBUtil.closeConnection(ps);
+		DBUtil.closeConnection(rs);
+
+		return discounts;
 	}
 
 	// Method to delete a discount from the DB
