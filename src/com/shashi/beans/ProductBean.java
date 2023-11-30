@@ -1,5 +1,7 @@
 package com.shashi.beans;
 
+import com.shashi.service.impl.DiscountServiceImpl;
+
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -108,6 +110,15 @@ public class ProductBean implements Serializable {
 	public String getDiscountId() { return discountId; }
 
 	public void setDiscountId(String discountId) { this.discountId = discountId; }
+
+	public double getDiscountedPrice() {
+		if (this.discountId == null) {
+			return this.prodPrice;
+		}
+		DiscountServiceImpl discountService = new DiscountServiceImpl();
+		DiscountBean discount = discountService.getDiscountDetails(this.discountId);
+		return Math.round(this.prodPrice - (this.prodPrice * discount.getDiscountPercentage() / 100.0));
+	}
 
 	@Override
 	public boolean equals(Object obj) {

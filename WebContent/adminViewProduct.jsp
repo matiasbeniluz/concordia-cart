@@ -104,8 +104,11 @@
 					</p>
 					<p class="productinfo"><%=product.getProdInfo()%></p>
 					<p class="price">
-						Rs
-						<%=product.getProdPrice()%>
+						<% if (product.getDiscountId() != null) { %>
+							On Sale! Original Price: Rs.<%=product.getProdPrice()%> Sale Price: Rs.<%=product.getDiscountedPrice()%>
+						<% } else { %>
+							Rs.<%=product.getProdPrice()%>
+						<% } %>
 					</p>
 					<form method="post">
 						<button type="submit"
