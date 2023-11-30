@@ -57,7 +57,7 @@ public class DiscountServiceImpl implements DiscountService {
 			} 
 			else 
 			{
-				status = "Discount Updation Failed!";
+				status = "Discount Addition Failed!";
 			}	
 
 		} catch (SQLException e) {
@@ -73,47 +73,45 @@ public class DiscountServiceImpl implements DiscountService {
 	
 	
     @Override
-    public void updateDiscountIntoDB(DiscountBean discount) {
+    public String updateDiscountIntoDB(String did, DiscountBean discount) {
         Connection con = DBUtil.provideConnection();
-
         PreparedStatement ps = null;
+        
+        String result = "Error in updating the discount";
 
         try {
-            if (discountExists(discount.getDiscountId())) {
-
-                //Update the existing discount
-                String updateQuery = "UPDATE discount SET discountPercentage=?, startDate=?, endDate=? WHERE discountId=?";
-                ps = con.prepareStatement(updateQuery);
-                ps.setDouble(1, discount.getDiscountPercentage());
-                ps.setDate(2, java.sql.Date.valueOf(discount.getStartDate()));
-                ps.setDate(3, java.sql.Date.valueOf(discount.getEndDate()));
-                ps.setString(4, discount.getDiscountId());
-            }
-            else {
-
-                // Insert a new discount
-                String insertQuery = "INSERT INTO discount (discountId, discountPercentage, startDate, endDate) VALUES (?, ?, ?, ?)";
-                ps = con.prepareStatement(insertQuery);
-                ps.setString(1, discount.getDiscountId());
-                ps.setDouble(2, discount.getDiscountPercentage());
-                ps.setDate(3, java.sql.Date.valueOf(discount.getStartDate()));
-                ps.setDate(4, java.sql.Date.valueOf(discount.getEndDate()));
-            }
+           
+        	//Update the existing discount
+            String updateQuery = "UPDATE discount SET discountName=?, discountPercentage=?, startDate=?, endDate=? WHERE discountId=?;";
+            ps = con.prepareStatement(updateQuery);
+            
+            ps.setString(1, discount.getDiscountName());
+            ps.setDouble(2, discount.getDiscountPercentage());
+            ps.setDate(3, java.sql.Date.valueOf(discount.getStartDate()));
+            ps.setDate(4, java.sql.Date.valueOf(discount.getEndDate()));
+            ps.setString(5, discount.getDiscountId());
+            
 
             // Execute the update or insert query
-            int rowsAffected = ps.executeUpdate();
+            int k = ps.executeUpdate();
+            
+            if (k > 0) 
+			{
+				result = "Discount Updated Successfully";
 
-//			// Check the result (optional)
-//			if (rowsAffected > 0) {
-//				System.out.println("Discount updated/inserted successfully.");
-//			} else {
-//				System.out.println("Failed to update/insert discount.");
-//			}
+			} 
+			else 
+			{
+				result = "Discount Updation Failed!";
+			}
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         DBUtil.closeConnection(con);
         DBUtil.closeConnection(ps);
+        
+        return result;
     }
 
     /**
@@ -238,9 +236,17 @@ public class DiscountServiceImpl implements DiscountService {
             String deleteQuery = "DELETE FROM discount WHERE discountId=?";
             ps = con.prepareStatement(deleteQuery);
             ps.setString(1, discountId);
-            ps.executeUpdate();
+            int k = ps.executeUpdate();
             
-            result = "Discount removed Successfully";
+            if (k > 0) 
+			{
+				result = "Discount Removed Successfully";
+
+			} 
+			else 
+			{
+				result = "Discount Removal Failed!";
+			}
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
