@@ -38,13 +38,18 @@ public interface DiscountService {
      * Method to delete a discount from the DB
      * @param discountId discount id
      */
-    public void deleteDiscountFromDB(String discountId);
+    void deleteDiscountFromDB(String discountId);
 
     /**
      * Get active discounts
      * @return list of active discounts
      */
     List<DiscountBean> getActiveDiscounts();
+
+    /**
+     * Get expired discounts
+     */
+    List<DiscountBean>  getExpiredDiscounts();
 
     /**
      * Remove expired discounts
