@@ -88,20 +88,6 @@
 			<%
 			for (ProductBean product : products) {
 				int cartQty = new CartServiceImpl().getCartItemCount(userName, product.getProdId());
-				String discountId = product.getProdId() +"_discount";
-				int percentage = 50;
-				LocalDate startDate = LocalDate.now().plusDays(1);
-
-                double randomDouble = Math.random();
-                int min = 0;
-                int max = 100;
-                int randomNumber = (int) (randomDouble * (max - min + 1)) + min;
-                LocalDate endDate = LocalDate.now().plusDays(randomNumber);
-                DiscountBean discount = new DiscountBean(discountId, percentage, startDate, endDate);
-                discount.setDiscountPercentage(percentage);
-                discounts.add(discount);
-                product.setDiscountId(discountId);
-                dsi.updateDiscountIntoDB(discount);
 			%>
 			<%
 
