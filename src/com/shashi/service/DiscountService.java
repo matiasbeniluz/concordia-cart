@@ -60,4 +60,12 @@ public interface DiscountService {
      * Remove expired discounts
      */
     void deleteExpiredDiscounts();
+
+    /**
+     * Checks if the given discount is currently active.
+     *
+     * @param discount The DiscountBean object to be checked.
+     * @return True if the discount is active, false otherwise.
+     */
+    boolean isActiveDiscount(DiscountBean discount);
 }

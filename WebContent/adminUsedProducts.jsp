@@ -106,7 +106,7 @@
                 </p>
                 <p class="productinfo"><%=product.getProdInfo()%></p>
                 <p class="price">
-                    <% if (product.getDiscountId() != null) { %>
+                    <% if (product.getDiscountedPrice() != product.getProdPrice()) { %>
                         On Sale! Original Price: Rs.<%=product.getProdPrice()%> Sale Price: Rs.<%=product.getDiscountedPrice()%>
                     <% } else { %>
                         Rs.<%=product.getProdPrice()%>

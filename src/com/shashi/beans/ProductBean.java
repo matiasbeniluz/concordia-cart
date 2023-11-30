@@ -1,9 +1,11 @@
 package com.shashi.beans;
 
+import com.shashi.service.DiscountService;
 import com.shashi.service.impl.DiscountServiceImpl;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @SuppressWarnings("serial")
 public class ProductBean implements Serializable {
@@ -115,9 +117,11 @@ public class ProductBean implements Serializable {
 		if (this.discountId == null) {
 			return this.prodPrice;
 		}
-		DiscountServiceImpl discountService = new DiscountServiceImpl();
+		DiscountService discountService = new DiscountServiceImpl();
 		DiscountBean discount = discountService.getDiscountDetails(this.discountId);
-		return Math.round(this.prodPrice - (this.prodPrice * discount.getDiscountPercentage() / 100.0));
+
+		return discountService.isActiveDiscount(discount) ? Math.round(this.prodPrice - (this.prodPrice * discount.getDiscountPercentage() / 100.0))
+				: this.prodPrice;
 	}
 
 	@Override
