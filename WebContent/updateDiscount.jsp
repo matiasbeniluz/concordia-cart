@@ -99,10 +99,10 @@
                 </div>
             </div>
             <div class="row text-center">
-                <div class="col-md-4" style="margin-bottom: 2px;">
+                <div class="col-md-6" style="margin-bottom: 2px;">
                     <button formaction="manageDiscounts.jsp" class="btn btn-danger">Cancel</button>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <button type="submit" class="btn btn-success">
                         Update Discount
                     </button>

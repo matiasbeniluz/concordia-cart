@@ -107,9 +107,10 @@ public class DiscountServiceImpl implements DiscountService {
             if (rs.next()) {
                 discount = new DiscountBean();
                 discount.setDiscountId(rs.getString(1));
-                discount.setDiscountPercentage(rs.getInt(2));
-                discount.setStartDate(rs.getObject(3, LocalDate.class));
-                discount.setEndDate(rs.getObject(4, LocalDate.class));
+                discount.setDiscountName(rs.getString(2));
+                discount.setDiscountPercentage(rs.getInt(3));
+                discount.setStartDate(rs.getObject(4, LocalDate.class));
+                discount.setEndDate(rs.getObject(5, LocalDate.class));
             }
 
         } catch (SQLException e) {
