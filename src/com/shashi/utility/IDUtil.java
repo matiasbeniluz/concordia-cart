@@ -14,6 +14,16 @@ public class IDUtil {
 
 		return pId;
 	}
+	
+	public static String generateDiscountId() {
+		String pId = null;
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+		pId = sdf.format(new Date());
+		pId = "D" + pId;
+
+		return pId;
+	}
 
 	public static String generateTransId() {
 		String tId = null;
