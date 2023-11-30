@@ -34,8 +34,9 @@ public class ProductBean implements Serializable {
 		this.prodQuantity = prodQuantity;
 		this.prodImage = prodImage;
 		this.isUsed = isUsed;
+		this.usedProdId = usedProdId;
+		this.discountId = discountId;
 	}
-
 
 	public String getProdId() {
 		return prodId;
