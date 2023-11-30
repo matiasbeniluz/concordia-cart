@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,8 +109,8 @@ public class DiscountServiceImpl implements DiscountService {
                 discount = new DiscountBean();
                 discount.setDiscountId(rs.getString(1));
                 discount.setDiscountPercentage(rs.getInt(2));
-                discount.setStartDate(rs.getDate(3).toLocalDate());
-                discount.setEndDate(rs.getDate(4).toLocalDate());
+                discount.setStartDate(rs.getObject(3, LocalDate.class));
+                discount.setEndDate(rs.getObject(4, LocalDate.class));
             }
 
         } catch (SQLException e) {
@@ -141,8 +142,8 @@ public class DiscountServiceImpl implements DiscountService {
                 DiscountBean discount = new DiscountBean(
                         rs.getString(1),
                         rs.getInt(2),
-                        rs.getDate(3).toLocalDate(),
-                        rs.getDate(4).toLocalDate()
+                        rs.getObject(3, LocalDate.class),
+                        rs.getObject(4, LocalDate.class)
                 );
 
                 discounts.add(discount);
