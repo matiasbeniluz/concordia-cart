@@ -107,6 +107,7 @@
                         Update Discount
                     </button>
                 </div>
+            </div>
         </form>
     </div>
 </div>
