@@ -47,6 +47,7 @@
                     style="background-color: #2c6c4b; color: white; font-size: 18px;">
             <tr>
                 <th>DiscountId</th>
+                <th>Name</th>
                 <th>Percentage</th>
                 <th>Start Date</th>
                 <th>End Date</th>
@@ -68,6 +69,7 @@
                         <%=discount.getDiscountId()%>
                     </a>
                 </td>
+                <td><%=discount.getDiscountName()%></td>
                 <td><%=discount.getDiscountPercentage()%>%</td>
                 <td><%=discount.getStartDate()%></td>
                 <td><%=(discount.getEndDate() == null ? "" : discount.getEndDate())%></td>

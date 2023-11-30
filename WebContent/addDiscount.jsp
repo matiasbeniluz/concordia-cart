@@ -64,6 +64,12 @@
                            placeholder="Enter Percentage" name="discount_percentage" class="form-control"
                            id="discount_percentage" required>
                 </div>
+                <div class="col-md-6 form-group">
+                    <label for="discount_name">Name</label>
+                    <input type="text"
+                           placeholder="Enter Name" name="discount_name" class="form-control"
+                           id="discount_name" required>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-6 form-group">
