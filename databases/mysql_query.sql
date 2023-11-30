@@ -3,6 +3,7 @@
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET SQL_SAFE_UPDATES = 0;
 
 -- -----------------------------------------------------
 -- Schema shopping-cart
@@ -31,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `shopping-cart`.`product` (
   `pusedproductid` VARCHAR(45) DEFAULT NULL,
   `discountid` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`pid`),
-  FOREIGN KEY (`discountid`) REFERENCES `shopping-cart`.`discount` (`discountId`))
+  FOREIGN KEY (`discountid`) REFERENCES `shopping-cart`.`discount` (`discountId`) ON DELETE SET NULL)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -43,11 +44,13 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `shopping-cart`.`discount` ;
 
 CREATE TABLE IF NOT EXISTS `shopping-cart`.`discount` (
-    `discountId` VARCHAR(45) NULL DEFAULT NULL,
+    `discountId` VARCHAR(45) NOT NULL,
+    `discountName` VARCHAR(100) NULL DEFAULT NULL,
     `discountPercentage` INT NULL DEFAULT NULL,
     `startDate` DATE,
     `endDate` DATE,
-    UNIQUE (`discountId`))
+    PRIMARY KEY (`discountId`),
+    UNIQUE (`discountName`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -213,7 +216,7 @@ SET `pusedproductid` = CONCAT(`pid`, 'U');
 
 -- Inserts the used products for the initial DB product entries
 INSERT INTO `shopping-cart`.`product`
-SELECT `pusedproductid`, `pname`, `ptype`, `pinfo`, `pprice` * 0.7, 0, `image`, true, null , 0
+SELECT `pusedproductid`, `pname`, `ptype`, `pinfo`, `pprice` * 0.7, 10, `image`, true, null , null
 FROM `shopping-cart`.`product`
 WHERE `pid` = REPLACE(`pusedproductid`, 'U', '');
 
@@ -267,6 +270,20 @@ COMMIT;
 START TRANSACTION;
 USE `shopping-cart`;
 INSERT INTO `shopping-cart`.`usercart` (`username`, `prodid`, `quantity`) VALUES ('guest@gmail.com', 'P20230423082243', 2);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `shopping-cart`.`discount`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `shopping-cart`;
+INSERT INTO `shopping-cart`.`discount` (`discountId`, `discountName`, `discountPercentage`, `startDate`, `endDate`) VALUES ('D20230423082243', 'test 1', 5, '2023-04-23', '2023-05-30');
+INSERT INTO `shopping-cart`.`discount` (`discountId`, `discountName`, `discountPercentage`, `startDate`, `endDate`) VALUES ('D20230523082243', 'test 2', 10, '2023-05-23', '2023-05-24');
+INSERT INTO `shopping-cart`.`discount` (`discountId`, `discountName`, `discountPercentage`, `startDate`, `endDate`) VALUES ('D20230623082243', 'test 3', 15, '2023-05-23', '2023-11-01');
+INSERT INTO `shopping-cart`.`discount` (`discountId`, `discountName`, `discountPercentage`, `startDate`, `endDate`) VALUES ('D20230723082244', 'insane 10 years discount', 60, '2023-01-23', '2033-11-01');
+INSERT INTO `shopping-cart`.`discount` (`discountId`, `discountName`, `discountPercentage`, `startDate`, `endDate`) VALUES ('D20230823082245', 'insane 20 years discount', 50, '2023-06-23', '2043-11-01');
 
 COMMIT;
 

@@ -177,6 +177,7 @@
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="adminViewProduct.jsp">Products</a></li>
+					<li><a href="adminUsedProducts.jsp">Used Products</a></li>
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#">Category <span class="caret"></span>
 					</a>
@@ -202,6 +203,17 @@
 							<li><a href="updateProductById.jsp">Update Product</a></li>
 
 						</ul></li>
+					<li><a href="manageDiscounts.jsp">Discounts</a></li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							Update Discounts <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="addDiscount.jsp">Add Discount</a></li>
+							<li><a href="removeDiscount.jsp">Remove Discount</a></li>
+							<li><a href="updateDiscountById.jsp">Update Discount</a></li>
+						</ul>
+					</li>
 					<li><a href="./LogoutSrv">Logout</a></li>
 
 				</ul>

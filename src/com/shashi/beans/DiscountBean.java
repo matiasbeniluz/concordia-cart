@@ -9,7 +9,7 @@ import com.shashi.utility.IDUtil;
 public class DiscountBean {
 
     private String discountId;
-
+    private String discountName;
     private int discountPercentage;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -23,8 +23,9 @@ public class DiscountBean {
         this.discountId = IDUtil.generateId();
     }
 
-    public DiscountBean(String discountId, int discountPercentage, LocalDate startDate, LocalDate endDate) {
+    public DiscountBean(String discountId, String discountName, int discountPercentage, LocalDate startDate, LocalDate endDate) {
         this.discountId = discountId;
+        this.discountName = discountName;
         this.discountPercentage = discountPercentage;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -36,6 +37,15 @@ public class DiscountBean {
 
     public void setDiscountId(String discountId) {
         this.discountId = discountId;
+    }
+
+
+    public String getDiscountName() {
+        return discountName;
+    }
+
+    public void setDiscountName(String discountName) {
+        this.discountName = discountName;
     }
 
     public double getDiscountPercentage() {
@@ -92,5 +102,14 @@ public class DiscountBean {
         }
         else
             return "Sale dates are not set";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DiscountBean)) {
+            return false;
+        }
+
+        return this.discountId.equals(((DiscountBean) obj).getDiscountId());
     }
 }
