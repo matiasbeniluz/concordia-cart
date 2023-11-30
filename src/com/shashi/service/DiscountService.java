@@ -16,7 +16,7 @@ public interface DiscountService {
      *
      * @param discount discount to update
      */
-    void updateDiscountIntoDB(DiscountBean discount);
+	public String updateDiscountIntoDB(String did, DiscountBean discount);
 
     /**
      * Given the discount id, return the discount associated with it

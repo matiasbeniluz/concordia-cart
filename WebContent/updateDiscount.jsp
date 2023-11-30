@@ -23,7 +23,10 @@
     String uname = (String) session.getAttribute("username");
     String pwd = (String) session.getAttribute("password");
     String discountid = request.getParameter("discountid");
+    
     DiscountBean discount = new DiscountServiceImpl().getDiscountDetails(discountid);
+    
+    
     if (discountid == null || discount == null) {
         response.sendRedirect("updateDiscountById.jsp?message=Please Enter a valid discount Id");
         return;
@@ -65,20 +68,20 @@
                 %>
             </div>
             <div class="row">
-                <input type="hidden" name="pid" class="form-control"
+                <input type="hidden" name="did" class="form-control"
                        value="<%=discount.getDiscountId()%>" id="discount_id" required>
             </div>
             <div class="row">
                 <div class="col-md-6 form-group">
                     <label for="discount_percentage">Percentage</label>
                     <input type="number"
-                           placeholder="Enter Percentage" name="discount_percentage" class="form-control"
+                           placeholder="Enter Percentage" name="percent" class="form-control"
                            value="<%=discount.getDiscountPercentage()%>" id="discount_percentage" required>
                 </div>
                 <div class="col-md-6 form-group">
                     <label for="discount_name">Name</label>
                     <input type="text"
-                           placeholder="Enter Name" name="discount_name" class="form-control"
+                           placeholder="Enter Name" name="name" class="form-control"
                            value="<%=discount.getDiscountName()%>" id="discount_name" required>
                 </div>
             </div>
@@ -86,7 +89,7 @@
                 <div class="col-md-6 form-group">
                     <label for="start_date">Start Date</label>
                     <input type="date"
-                           placeholder="Enter Start Date" name="start_date" class="form-control"
+                           placeholder="Enter Start Date" name="startDate" class="form-control"
                            value="<%=discount.getStartDate()%>" id="start_date"
                            onchange="updateEndDateMin()"
                            required>
@@ -94,7 +97,7 @@
                 <div class="col-md-6 form-group">
                     <label for="end_date">End Date</label>
                     <input type="date"
-                           placeholder="Enter Start Date" name="start_date" class="form-control"
+                           placeholder="Enter End Date" name="endDate" class="form-control"
                            value="<%=discount.getEndDate()%>" id="end_date">
                 </div>
             </div>
