@@ -129,14 +129,14 @@
 					</div>
 					<div class="col-md-4 form-group">
 						<label>Start Date</label>
-						<input type="date" id="startDate" name="startDate" class="form-control" style="width: 120px;" required
+						<input type="date" id="startDate" name="startDate" class="form-control" style="width: 120px;"
 							   min="<%= java.time.LocalDate.now() %>"
 							   onchange="updateEndDateMin()"
 						/>
 					</div>
 					<div class="col-md-4 form-group">
 						<label>End Date</label>
-						<input type="date" id="endDate" name="endDate" class="form-control" style="width: 120px;" required
+						<input type="date" id="endDate" name="endDate" class="form-control" style="width: 120px;"
 							   min="<%= java.time.LocalDate.now() %>"
 						/>
 					</div>
