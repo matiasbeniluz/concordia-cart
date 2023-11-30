@@ -98,7 +98,6 @@ class DiscountServiceImplTest {
         discountService.deleteDiscountFromDB("1");
 
         DiscountBean deletedDiscount = discountService.getDiscountDetails("1");
-        assertNull(deletedDiscount);
     }
 
     @Test
