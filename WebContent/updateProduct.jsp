@@ -105,40 +105,36 @@
 				</div>
 				<div class="row">
 					<div class="col-md-6 form-group">
-						<label for="last_name">Unit Price</label> <input type="number"
+						<label for="unit_price">Unit Price</label> <input type="number"
 							value="<%=product.getProdPrice()%>"
 							placeholder="Enter Unit Price" name="price" class="form-control"
-							id="last_name" required>
+							id="unit_price" required>
 					</div>
 					<div class="col-md-6 form-group">
-						<label for="last_name">Stock Quantity</label> <input type="number"
+						<label for="stock_quantity">Stock Quantity</label> <input type="number"
 							value="<%=product.getProdQuantity()%>"
 							placeholder="Enter Stock Quantity" class="form-control"
-							id="last_name" name="quantity" required>
+							id="stock_quantity" name="quantity" required>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-4 form-group">
-						<label>Sale Percentage</label>
-						<select name="salePercentage" class="form-control" style="width: 80px;">
-							<option value="0">0%</option>
-							<option value="-25">-25%</option>
-							<option value="-30">-30%</option>
-							<option value="-50">-50%</option>
+					<div class="col-md-12 form-group">
+						<label for="discountId">Discount</label>
+						<select name="discountId" id="discountId" class="form-control" required>
+							<!-- Option for None -->
+							<option value="">None</option>
+
+							<!-- Options for the discounts -->
+							<%
+								DiscountServiceImpl discountDao = new DiscountServiceImpl();
+								List<DiscountBean> discounts = discountDao.getActiveAndUpcomingDiscounts();
+								for (DiscountBean discount : discounts) {
+									String displayText = discount.getDiscountName() + " - " + discount.getDiscountPercentage() + "% - " + discount.getStartDate() + " to " + discount.getEndDate();
+									String selectedAttr = discount.getDiscountId() != null && discount.getDiscountId().equalsIgnoreCase(product.getDiscountId()) ? "selected" : "";
+							%>
+								<option value="<%=discount.getDiscountId()%>" <%=selectedAttr%>><%=displayText%></option>
+							<% } %>
 						</select>
-					</div>
-					<div class="col-md-4 form-group">
-						<label>Start Date</label>
-						<input type="date" id="startDate" name="startDate" class="form-control" style="width: 120px;" required
-							   min="<%= java.time.LocalDate.now() %>"
-							   onchange="updateEndDateMin()"
-						/>
-					</div>
-					<div class="col-md-4 form-group">
-						<label>End Date</label>
-						<input type="date" id="endDate" name="endDate" class="form-control" style="width: 120px;" required
-							   min="<%= java.time.LocalDate.now() %>"
-						/>
 					</div>
 				</div>
 				<div class="row text-center">
@@ -159,14 +155,6 @@
 			</form>
 		</div>
 	</div>
-
-	<script>
-		function updateEndDateMin() {
-			// Get the selected start date
-			// Set the minimum date for end date to the selected start date
-			document.getElementById("endDate").min = document.getElementById("startDate").value;
-		}
-	</script>
 
 	<%@ include file="footer.html"%>
 </body>
