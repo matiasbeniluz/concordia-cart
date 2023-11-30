@@ -27,4 +27,21 @@ public interface DiscountService {
      * @return list of discounts
      */
     List<DiscountBean> getAllDiscounts();
+
+    /**
+     * Get active and upcoming discounts
+     * @return list of active and upcoming discounts
+     */
+    List<DiscountBean> getActiveAndUpcomingDiscounts();
+
+    /**
+     * Get active discounts
+     * @return list of active discounts
+     */
+    List<DiscountBean> getActiveDiscounts();
+
+    /**
+     * Remove expired discounts
+     */
+    void deleteExpiredDiscounts();
 }

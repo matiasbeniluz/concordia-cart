@@ -11,6 +11,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DiscountServiceImpl implements DiscountService {
     public void updateDiscountIntoDB(DiscountBean discount) {
@@ -166,18 +170,91 @@ public class DiscountServiceImpl implements DiscountService {
         Connection con = DBUtil.provideConnection();
         PreparedStatement ps = null;
 
-        try {
+		try {
 
-            // Delete the discount entry
-            String deleteQuery = "DELETE FROM discount WHERE discountId=?";
-            ps = con.prepareStatement(deleteQuery);
-            ps.setString(1, discountId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            DBUtil.closeConnection(con);
-            DBUtil.closeConnection(ps);
-        }
+			// Delete the discount entry
+			String deleteQuery = "DELETE FROM discount WHERE discountId=?";
+			ps = con.prepareStatement(deleteQuery);
+			ps.setString(1, discountId);
+			ps.executeUpdate();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			DBUtil.closeConnection(con);
+			DBUtil.closeConnection(ps);
+		}
+	}
+
+	@Override
+    public List<DiscountBean> getActiveAndUpcomingDiscounts() {
+		Date currentDate = Date.valueOf(LocalDate.now());
+		String query = "SELECT * FROM `discount` WHERE `endDate` >= ?";
+		List<DiscountBean> discounts = new ArrayList<>();
+
+		try (Connection con = DBUtil.provideConnection()) {
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setDate(1, currentDate);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				DiscountBean discount = new DiscountBean();
+				discount.setDiscountId(rs.getString("discountId"));
+				discount.setDiscountName(rs.getString("discountName"));
+				discount.setDiscountPercentage(rs.getInt("discountPercentage"));
+				discount.setStartDate(rs.getDate("startDate").toLocalDate());
+				discount.setEndDate(rs.getDate("endDate").toLocalDate());
+
+				discounts.add(discount);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return discounts;
     }
+
+	@Override
+    public List<DiscountBean> getActiveDiscounts() {
+		Date currentDate = Date.valueOf(LocalDate.now());
+		String query = "SELECT * FROM `discount` WHERE `startDate` <= ? AND `endDate` >= ?";
+		List<DiscountBean> discounts = new ArrayList<>();
+
+		try (Connection con = DBUtil.provideConnection()) {
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setDate(1, currentDate);
+			ps.setDate(2, currentDate);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				DiscountBean discount = new DiscountBean();
+				discount.setDiscountId(rs.getString("discountId"));
+				discount.setDiscountName(rs.getString("discountName"));
+				discount.setDiscountPercentage(rs.getInt("discountPercentage"));
+				discount.setStartDate(rs.getDate("startDate").toLocalDate());
+				discount.setEndDate(rs.getDate("endDate").toLocalDate());
+
+				discounts.add(discount);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return discounts;
+    }
+
+	@Override
+	public void deleteExpiredDiscounts() {
+		Date currentDate = Date.valueOf(LocalDate.now());
+		String query = "DELETE FROM `discount` WHERE `endDate` < ?";
+
+		try (Connection con = DBUtil.provideConnection()) {
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setDate(1, currentDate);
+			int rowsAffected = ps.executeUpdate();
+
+			System.out.println("Deleted " + rowsAffected + " expired discounts.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
