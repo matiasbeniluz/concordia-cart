@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -65,8 +66,19 @@ public class UpdateProductSrv extends HttpServlet {
 		
 
 		int salePercentage = Integer.parseInt(request.getParameter("salePercentage"));
-		LocalDate saleStartDate = LocalDate.parse(request.getParameter("startDate"));
-		LocalDate saleEndDate = LocalDate.parse(request.getParameter("endDate"));
+
+		String startDate = request.getParameter("startDate");
+		String endDate = request.getParameter("endDate");
+
+		LocalDate saleStartDate = null;
+		LocalDate saleEndDate = null;
+
+		if (startDate != null && !startDate.isEmpty()) {
+			saleStartDate = LocalDate.parse(request.getParameter("startDate"));
+		}
+		if (endDate != null && !endDate.isEmpty()) {
+			saleEndDate = LocalDate.parse(request.getParameter("endDate"));
+		}
 
 		ProductBean product = new ProductBean();
 		product.setProdId(prodId);
@@ -121,6 +133,13 @@ public class UpdateProductSrv extends HttpServlet {
 				dsi.deleteDiscountFromDB(discount.getDiscountId());
 			}
 			else {
+				if (saleStartDate == null) {
+					saleStartDate = java.time.LocalDate.now();
+				}
+				if (saleEndDate == null) {
+					saleEndDate = java.time.LocalDate.now().plusDays(1);
+				}
+
 				discount.setDiscountPercentage(salePercentage);
 				discount.setStartDate(saleStartDate);
 				discount.setEndDate(saleEndDate);
