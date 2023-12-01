@@ -102,8 +102,8 @@
 					<p class="productinfo"><%=description%>..
 					</p>
 					<p class="price">
-						<% if (product.getDiscountedPrice() != product.getProdPrice()) { %>
-							On Sale! Original Price: Rs.<%=product.getProdPrice()%> Sale Price: Rs.<%=product.getDiscountedPrice()%>
+						<% if (product.getCurrentPrice() != product.getProdPrice()) { %>
+							On Sale! Original Price: Rs.<%=product.getProdPrice()%> Sale Price: Rs.<%=product.getCurrentPrice()%>
 						<% } else { %>
 							Rs.<%=product.getProdPrice()%>
 						<% } %>

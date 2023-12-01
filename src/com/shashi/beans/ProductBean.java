@@ -113,7 +113,7 @@ public class ProductBean implements Serializable {
 
 	public void setDiscountId(String discountId) { this.discountId = discountId; }
 
-	public double getDiscountedPrice() {
+	public double getCurrentPrice() {
 		if (this.discountId == null) {
 			return this.prodPrice;
 		}

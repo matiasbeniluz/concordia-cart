@@ -99,7 +99,7 @@
 
 					ProductBean product = new ProductServiceImpl().getProductDetails(prodId);
 
-					double currAmount = product.getDiscountedPrice() * prodQuantity;
+					double currAmount = product.getCurrentPrice() * prodQuantity;
 
 					totAmount += currAmount;
 
@@ -110,7 +110,7 @@
 					<td><img src="./ShowImage?pid=<%=product.getProdId()%>"
 						style="width: 50px; height: 50px;"></td>
 					<td><%=product.getProdName()%></td>
-					<td><%=product.getDiscountedPrice()%></td>
+					<td><%=product.getCurrentPrice()%></td>
 					<td><form method="post" action="./UpdateToCart">
 							<input type="number" name="pqty" value="<%=prodQuantity%>"
 								style="max-width: 70px;" min="0"> <input type="hidden"
