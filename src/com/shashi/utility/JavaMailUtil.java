@@ -71,7 +71,7 @@ public class JavaMailUtil {
 	}
 
 	protected static void sendMail(String recipient, String subject, String htmlTextMessage) throws MessagingException {
-
+/*
 		System.out.println("Preparing to send Mail");
 		Properties properties = new Properties();
 		String host = "smtp.gmail.com";
@@ -102,8 +102,8 @@ public class JavaMailUtil {
 
 		Transport.send(message);
 
-		System.out.println("Message Sent Successfully!");
-
+ */
+		System.out.println("EMAIL MESSAGE SENT: " + htmlTextMessage);
 	}
 
 	private static Message prepareMessage(Session session, String myAccountEmail, String recipientEmail, String subject,
